@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Overview;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -12,7 +12,8 @@ class OverviewController extends Controller
      */
     public function index()
     {
-        return $this->render('overview/index.html.twig', [
+
+        return $this->render('@Controller/note.html.twig', [
             'controller_name' => 'OverviewController',
         ]);
     }
