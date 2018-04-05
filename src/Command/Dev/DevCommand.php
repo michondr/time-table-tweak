@@ -40,6 +40,12 @@ class DevCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $str= 'Pá 12:45-14:15 ?? (př.)';
+
+        dump($this->resolveBuilding($str));
+        dump($this->resolveRoom($str));
+
+        die;
         $data = explode(' ', 'Út 12:45-14:15 SB 105 (cv.)');
         $times = explode('-', $data[1]);
 
@@ -53,6 +59,24 @@ class DevCommand extends Command
 
         $this->locationFacade->insertIfNotExist($location);
 
+    }
+
+    private function resolveBuilding(string $str)
+    {
+        $data = explode(' ', $str);
+        $building = $data[2];
+
+        if(strpos($building, '?') !== false){
+            return null;
+        }
+        return $building;
+    }
+
+    private function resolveRoom(string $str)
+    {
+        $data = explode(' ', $str);
+
+        return $data[3];
     }
 
 }

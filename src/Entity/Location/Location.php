@@ -35,12 +35,12 @@ class Location extends EntityFieldManager
         return $this->id;
     }
 
-    public function getBuilding(): string
+    public function getBuilding():? string
     {
         return $this->building;
     }
 
-    public function setBuilding(string $building): void
+    public function setBuilding(?string $building): void
     {
         $this->building = $building;
     }

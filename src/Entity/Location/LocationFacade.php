@@ -38,7 +38,7 @@ class LocationFacade
         );
 
         if (!is_null($inDb)) {
-//            return $inDb;
+            return $inDb;
         }
 
         return $this->insert($entity);

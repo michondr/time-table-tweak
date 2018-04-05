@@ -108,8 +108,12 @@ class DataFiller
     private function resolveBuilding(string $str)
     {
         $data = explode(' ', $str);
+        $building = $data[2];
 
-        return $data[2];
+        if(strpos($building, '?') !== false){
+            return null;
+        }
+        return $building;
     }
 
     private function resolveRoom(string $str)
