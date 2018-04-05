@@ -11,7 +11,7 @@ use App\DateTime\Time\Time;
 
 class DateTimeType extends Type
 {
-    const KUTNY_DATETIME = 'kutnyDateTime';
+    const MICHONDR_DATETIME = 'michondr_date_time';
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
@@ -25,7 +25,7 @@ class DateTimeType extends Type
 
     public function getName()
     {
-        return self::KUTNY_DATETIME;
+        return self::MICHONDR_DATETIME;
     }
     
     public function convertToPHPValue($value, AbstractPlatform $platform)

@@ -2,10 +2,11 @@
 
 namespace App\Entity\Teacher;
 
+use App\Entity\EntityFieldManager;
 use Doctrine\ORM\Mapping as ORM;
 
 /** @ORM\Entity() */
-class Teacher
+class Teacher extends EntityFieldManager
 {
     /**
      * @ORM\Id()
@@ -19,33 +20,21 @@ class Teacher
      */
     private $name;
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function __toString()
+    {
+        return (string)$this->id;
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getName():? string
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     */
     public function setName($name): void
     {
         $this->name = $name;

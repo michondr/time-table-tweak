@@ -22,22 +22,39 @@ class TimeTable
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Subject\Subject")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Subject\Subject", cascade={"persist"})
      * @ORM\JoinColumn(name="subject", referencedColumnName="id")
      */
     private $subject;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Teacher\Teacher")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Teacher\Teacher", cascade={"persist"})
      * @ORM\JoinColumn(name="teacher", referencedColumnName="id")
+     * @ORM\Column(nullable=true)
      */
     private $teacher;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Location\Location")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Location\Location", cascade={"persist"})
      * @ORM\JoinColumn(name="location", referencedColumnName="id")
+     * @ORM\Column(nullable=true)
      */
     private $location;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $day;
+
+    /**
+     * @ORM\Column(type="michondr_time")
+     */
+    private $timeFrom;
+
+    /**
+     * @ORM\Column(type="michondr_time")
+     */
+    private $timeTo;
 
     /**
      * @ORM\Column(type="string", columnDefinition="enum('lecture', 'seminar', 'other')")
@@ -64,147 +81,118 @@ class TimeTable
      */
     private $capacityClass3;
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return Subject|null
-     */
     public function getSubject()
     {
         return $this->subject;
     }
 
-    /**
-     * @param mixed $subject
-     */
-    public function setSubject($subject): void
+    public function setSubject(?Subject $subject): void
     {
         $this->subject = $subject;
     }
 
-    /**
-     * @return Teacher|null
-     */
     public function getTeacher()
     {
         return $this->teacher;
     }
 
-    /**
-     * @param mixed $teacher
-     */
-    public function setTeacher($teacher): void
+    public function setTeacher(?Teacher $teacher): void
     {
         $this->teacher = $teacher;
     }
 
-    /**
-     * @return Location|null
-     */
     public function getLocation()
     {
         return $this->location;
     }
 
-    /**
-     * @param mixed $location
-     */
-    public function setLocation($location): void
+    public function setLocation(?Location $location): void
     {
         $this->location = $location;
     }
 
-    /**
-     * @return string
-     */
     public function getActionType()
     {
         return $this->actionType;
     }
 
-    /**
-     * @param mixed $actionType
-     */
     public function setActionType($actionType): void
     {
         $this->actionType = $actionType;
     }
 
-    /**
-     * @return int
-     */
     public function getCapacityFull()
     {
         return $this->capacityFull;
     }
 
-    /**
-     * @param mixed $capacityFull
-     */
     public function setCapacityFull($capacityFull): void
     {
         $this->capacityFull = $capacityFull;
     }
 
-    /**
-     * @return int
-     */
     public function getCapacityClass1()
     {
         return $this->capacityClass1;
     }
 
-    /**
-     * @param mixed $capacityClass1
-     */
     public function setCapacityClass1($capacityClass1): void
     {
         $this->capacityClass1 = $capacityClass1;
     }
 
-    /**
-     * @return int
-     */
     public function getCapacityClass2()
     {
         return $this->capacityClass2;
     }
 
-    /**
-     * @param mixed $capacityClass2
-     */
     public function setCapacityClass2($capacityClass2): void
     {
         $this->capacityClass2 = $capacityClass2;
     }
 
-    /**
-     * @return int
-     */
     public function getCapacityClass3()
     {
         return $this->capacityClass3;
     }
 
-    /**
-     * @param mixed $capacityClass3
-     */
     public function setCapacityClass3($capacityClass3): void
     {
         $this->capacityClass3 = $capacityClass3;
+    }
+
+    public function getDay()
+    {
+        return $this->day;
+    }
+
+    public function setDay($day): void
+    {
+        $this->day = $day;
+    }
+
+    public function getTimeFrom()
+    {
+        return $this->timeFrom;
+    }
+
+    public function setTimeFrom($timeFrom): void
+    {
+        $this->timeFrom = $timeFrom;
+    }
+
+    public function getTimeTo()
+    {
+        return $this->timeTo;
+    }
+
+    public function setTimeTo($timeTo): void
+    {
+        $this->timeTo = $timeTo;
     }
 }

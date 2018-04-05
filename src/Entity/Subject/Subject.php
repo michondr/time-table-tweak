@@ -2,10 +2,11 @@
 
 namespace App\Entity\Subject;
 
+use App\Entity\EntityFieldManager;
 use Doctrine\ORM\Mapping as ORM;
 
 /** @ORM\Entity() */
-class Subject
+class Subject extends EntityFieldManager
 {
     /**
      * @ORM\Id()
@@ -24,50 +25,32 @@ class Subject
      */
     private $name;
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function __toString()
+    {
+        return (string)$this->id;
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIndent()
+    public function getIndent(): string
     {
         return $this->indent;
     }
 
-    /**
-     * @param mixed $indent
-     */
-    public function setIndent($indent): void
+    public function setIndent(string $indent): void
     {
         $this->indent = $indent;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     */
-    public function setName($name): void
+    public function setName(string $name): void
     {
         $this->name = $name;
     }

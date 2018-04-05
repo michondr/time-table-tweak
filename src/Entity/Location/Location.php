@@ -2,10 +2,11 @@
 
 namespace App\Entity\Location;
 
+use App\Entity\EntityFieldManager;
 use Doctrine\ORM\Mapping as ORM;
 
 /** @ORM\Entity() */
-class Location
+class Location extends EntityFieldManager
 {
     /**
      * @ORM\Id()
@@ -24,50 +25,32 @@ class Location
      */
     private $room;
 
-    /**
-     * @return mixed
-     */
+    public function __toString()
+    {
+        return (string)$this->id;
+    }
+
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBuilding()
+    public function getBuilding(): string
     {
         return $this->building;
     }
 
-    /**
-     * @param mixed $building
-     */
-    public function setBuilding($building): void
+    public function setBuilding(string $building): void
     {
         $this->building = $building;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getRoom()
+    public function getRoom(): int
     {
         return $this->room;
     }
 
-    /**
-     * @param mixed $room
-     */
-    public function setRoom($room): void
+    public function setRoom(int $room): void
     {
         $this->room = $room;
     }
