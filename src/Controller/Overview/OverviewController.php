@@ -18,6 +18,5 @@ class OverviewController extends Controller
                 'controller_name' => 'OverviewController',
             ]
         );
-
     }
 }
