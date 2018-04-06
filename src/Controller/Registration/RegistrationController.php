@@ -2,46 +2,64 @@
 
 namespace App\Controller\Registration;
 
+use App\Controller\Flash;
 use App\Entity\User\User;
+use App\Entity\User\UserFacade;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends Controller
 {
+    private $passwordEncoder;
+    private $userFacade;
+
+    public function __construct(
+        UserPasswordEncoderInterface $passwordEncoder,
+        UserFacade $userFacade
+    ) {
+        $this->passwordEncoder = $passwordEncoder;
+        $this->userFacade = $userFacade;
+    }
+
     /**
      * @Route("/register", name="user_registration")
      */
-    public function registerAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function registerAction(Request $request)
     {
-        // 1) build the form
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
-        // 2) handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // 3) Encode the password (you could also do this via Doctrine listener)
-            $password = $passwordEncoder->encodePassword($user, $user->getPassword());
+            $password = $this->passwordEncoder->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
 
-            // 4) save the User!
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if($this->userFacade->isReadyToSave($user)){
+                $this->addFlash(Flash::ERROR, 'Already exists user with this username or email');
+                return $this->returnForm($form);
+            }
 
-            // ... do any other work - like sending them an email, etc
-            // maybe set a "flash" success message for the user
+            $this->userFacade->insertIfNotExist($user);
+
+            $this->addFlash(Flash::SUCCESS, 'Registration successfull!');
 
             return $this->redirectToRoute('root');
         }
 
+        return $this->returnForm($form);
+    }
+
+    private function returnForm(FormInterface $form)
+    {
         return $this->render(
             '@Controller/Registration/registration.html.twig',
-            ['form' => $form->createView(),
-                'controller_name' => 'RegistrationController']
+            [
+                'form' => $form->createView(),
+            ]
         );
     }
 }

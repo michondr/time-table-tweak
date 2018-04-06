@@ -32,3 +32,4 @@ services:
     App\Entity\Subject\SubjectFacade: ~
     App\Entity\Teacher\TeacherFacade: ~
     App\Entity\TimeTable\TimeTableFacade: ~
+    App\Entity\User\UserFacade: ~

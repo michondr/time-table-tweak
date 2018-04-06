@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\DateTime\DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -39,9 +40,14 @@ class User implements UserInterface, \Serializable
     private $isActive;
 
     /**
-     * @ORM\Column(type="simple_array")
+     * @ORM\Column(type="simple_array", nullable=true)
      */
     private $roles;
+
+    /**
+     * @ORM\Column(type="michondr_date_time")
+     */
+    private $addedAt;
 
     public function __construct()
     {
@@ -55,9 +61,6 @@ class User implements UserInterface, \Serializable
         return $this->username;
     }
 
-    /**
-     * @param mixed $username
-     */
     public function setUsername($username): void
     {
         $this->username = $username;
@@ -75,9 +78,6 @@ class User implements UserInterface, \Serializable
         return $this->password;
     }
 
-    /**
-     * @param mixed $password
-     */
     public function setPassword($password): void
     {
         $this->password = $password;
@@ -85,7 +85,12 @@ class User implements UserInterface, \Serializable
 
     public function getRoles()
     {
-        return array_merge($this->roles, ['ROLE_USER']);
+        $rolesFull = array_merge($this->roles, ['ROLE_USER']);
+        if ($this->isActive) {
+            return $rolesFull;
+        }
+
+        return array_merge($rolesFull, ['ROLE_DEACTIVATED']);
     }
 
     public function eraseCredentials()
@@ -118,51 +123,38 @@ class User implements UserInterface, \Serializable
             ) = unserialize($serialized);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getEmail()
     {
         return $this->email;
     }
 
-    /**
-     * @param mixed $email
-     */
     public function setEmail($email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return mixed
-     */
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->isActive;
     }
 
-    /**
-     * @param mixed $isActive
-     */
-    public function setIsActive($isActive): void
+    public function setIsActive(bool $isActive): void
     {
         $this->isActive = $isActive;
+    }
+
+    public function getAddedAt(): ? DateTime
+    {
+        return $this->addedAt;
+    }
+
+    public function setAddedAt(DateTime $addedAt): void
+    {
+        $this->addedAt = $addedAt;
     }
 }

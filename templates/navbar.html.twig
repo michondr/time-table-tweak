@@ -7,11 +7,16 @@
 
         <div class="collapse navbar-collapse" id="mobile-nav">
             <ul class="navbar-nav ml-auto">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a href="{{ path('admin') }}" class="nav-link">Admin</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
-                    <a href="/" class="nav-link">Home</a>
+                    <a href="{{ path('root') }}" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    {#<a href="/article/new" class="nav-link">New Article</a>#}
+                    <a href="{{ path('logout') }}" class="nav-link">Logout</a>
                 </li>
             </ul>
         </div>

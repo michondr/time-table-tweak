@@ -1,11 +1,11 @@
 {% for label, message in app.flashes %}
-    {% if label == 'warning' or label == 'info' or label == 'success' %}
+
+    {% if label == 'warning' or label == 'info' or label == 'success' or label == 'danger' %}
         {% set type = label %}
-    {% elseif label == 'error' %}
-        {% set type = 'danger' %}
     {% else %}
         {% set type = 'primary' %}
     {% endif %}
+
     <div class="alert alert-dismissible alert-{{ type }}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         {{ message[0] }}
