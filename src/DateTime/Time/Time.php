@@ -8,7 +8,7 @@ class Time
     private $minute;
     private $second;
 
-    public function __construct($hour, $minute, $second)
+    public function __construct($hour, $minute, $second = 0)
     {
         $this->hour = (int)$hour;
         $this->minute = (int)$minute;

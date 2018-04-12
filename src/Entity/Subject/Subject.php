@@ -5,7 +5,9 @@ namespace App\Entity\Subject;
 use App\Entity\EntityFieldManager;
 use Doctrine\ORM\Mapping as ORM;
 
-/** @ORM\Entity() */
+/**
+ * @ORM\Entity(repositoryClass="App\Entity\Subject\SubjectRepository")
+ */
 class Subject extends EntityFieldManager
 {
     /**
@@ -53,6 +55,11 @@ class Subject extends EntityFieldManager
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getViewName()
+    {
+        return $this->getIndent().' '.$this->getName();
     }
 
 }

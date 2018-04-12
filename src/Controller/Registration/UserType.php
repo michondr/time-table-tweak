@@ -6,6 +6,7 @@ use App\Entity\User\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,7 +23,6 @@ class UserType extends AbstractType
                 [
                     'label' => 'Email address',
                     'attr' => [
-                        'class' => 'form-control',
                         'aria-describedby' => 'emailHelp',
                         'placeholder' => 'Enter email',
                     ],
@@ -34,7 +34,6 @@ class UserType extends AbstractType
                 [
                     'label' => 'Username',
                     'attr' => [
-                        'class' => 'form-control',
                         'aria-describedby' => 'emailHelp',
                         'placeholder' => 'Username',
                     ],
@@ -42,13 +41,18 @@ class UserType extends AbstractType
             )
             ->add(
                 'password',
-                PasswordType::class,
+                RepeatedType::class,
                 [
-                    'label' => 'Password',
-                    'attr' => [
-                        'class' => 'form-control',
-                        'placeholder' => 'Password',
+                    'type' => PasswordType::class,
+                    'first_options' => [
+                        'label' => 'Password',
+                        'attr' => ['placeholder' => 'Password',],
                     ],
+                    'second_options' => [
+                        'label' => 'Repeat password',
+                        'attr' => ['placeholder' => 'Password',],
+                    ],
+
                 ]
             )->add(
                 'submit',

@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Entity\TimeTable;
+namespace App\Entity\TimeTableItem;
 
+use App\DateTime\Time\Time;
+use App\Entity\EntityFieldManager;
 use App\Entity\Location\Location;
 use App\Entity\Subject\Subject;
 use App\Entity\Teacher\Teacher;
+use App\TimeTableBuilder\TimeTable;
 use Doctrine\ORM\Mapping as ORM;
 
-/** @ORM\Entity() */
-class TimeTable
+/** @ORM\Entity(repositoryClass="App\Entity\TimeTableItem\TimeTableItemRepository") */
+class TimeTableItem extends EntityFieldManager
 {
     const ACTION_SEMINAR = 'seminar';
     const ACTION_LECTURE = 'lecture';
@@ -28,16 +31,14 @@ class TimeTable
     private $subject;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Teacher\Teacher", cascade={"persist"})
-     * @ORM\JoinColumn(name="teacher", referencedColumnName="id")
-     * @ORM\Column(nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Teacher\Teacher", cascade={"persist"}, fetch="LAZY")
+     * @ORM\JoinColumn(name="teacher", referencedColumnName="id", nullable=true)
      */
     private $teacher;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Location\Location", cascade={"persist"})
-     * @ORM\JoinColumn(name="location", referencedColumnName="id")
-     * @ORM\Column(nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Location\Location", cascade={"persist"}, fetch="LAZY")
+     * @ORM\JoinColumn(name="location", referencedColumnName="id", nullable=true)
      */
     private $location;
 
@@ -86,7 +87,7 @@ class TimeTable
         return $this->id;
     }
 
-    public function getSubject()
+    public function getSubject(): ?Subject
     {
         return $this->subject;
     }
@@ -96,7 +97,7 @@ class TimeTable
         $this->subject = $subject;
     }
 
-    public function getTeacher()
+    public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
@@ -106,7 +107,7 @@ class TimeTable
         $this->teacher = $teacher;
     }
 
-    public function getLocation()
+    public function getLocation(): ?Location
     {
         return $this->location;
     }
@@ -176,7 +177,7 @@ class TimeTable
         $this->day = $day;
     }
 
-    public function getTimeFrom()
+    public function getTimeFrom(): ?Time
     {
         return $this->timeFrom;
     }
@@ -186,7 +187,7 @@ class TimeTable
         $this->timeFrom = $timeFrom;
     }
 
-    public function getTimeTo()
+    public function getTimeTo(): ?Time
     {
         return $this->timeTo;
     }
@@ -194,5 +195,19 @@ class TimeTable
     public function setTimeTo($timeTo): void
     {
         $this->timeTo = $timeTo;
+    }
+
+    public function getTimeTableOccupiedIds()
+    {
+        $startingId = TimeTable::getIntervalIdByStartTime($this->getTimeFrom());
+        $endingId = TimeTable::getIntervalIdByEndTime($this->getTimeTo());
+        $ids = [];
+
+        while ($startingId <= $endingId){
+            $ids[] = $startingId;
+            $startingId++;
+        }
+
+        return $ids;
     }
 }

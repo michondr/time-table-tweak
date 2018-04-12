@@ -43,4 +43,9 @@ class SubjectFacade
 
         return $this->insert($entity);
     }
+
+    public function getAll()
+    {
+        return $this->repository->findAll();
+    }
 }

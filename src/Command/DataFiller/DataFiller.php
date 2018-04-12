@@ -9,8 +9,8 @@ use App\Entity\Subject\Subject;
 use App\Entity\Subject\SubjectFacade;
 use App\Entity\Teacher\Teacher;
 use App\Entity\Teacher\TeacherFacade;
-use App\Entity\TimeTable\TimeTable;
-use App\Entity\TimeTable\TimeTableFacade;
+use App\Entity\TimeTableItem\TimeTableItem;
+use App\Entity\TimeTableItem\TimeTableItemFacade;
 
 class DataFiller
 {
@@ -28,7 +28,7 @@ class DataFiller
      */
     private $locationFacade;
     /**
-     * @var TimeTableFacade
+     * @var TimeTableItemFacade
      */
     private $timeTableFacade;
     /**
@@ -40,7 +40,7 @@ class DataFiller
         TeacherFacade $teacherFacade,
         SubjectFacade $subjectFacade,
         LocationFacade $locationFacade,
-        TimeTableFacade $timeTableFacade,
+        TimeTableItemFacade $timeTableFacade,
         DateTimeFactory $dateTimeFactory
     ) {
         $this->teacherFacade = $teacherFacade;
@@ -78,7 +78,7 @@ class DataFiller
         $location->setRoom((int)$this->resolveRoom($row->getTimeLocation()));
         $location = $this->locationFacade->insertIfNotExist($location);
 
-        $timeTable = new TimeTable();
+        $timeTable = new TimeTableItem();
         $timeTable->setTeacher($teacher);
         $timeTable->setSubject($subject);
         $timeTable->setLocation($location);
@@ -96,13 +96,13 @@ class DataFiller
     private function resolveActionType(string $type)
     {
         if ($type === 'Přednáška') {
-            return TimeTable::ACTION_LECTURE;
+            return TimeTableItem::ACTION_LECTURE;
         }
         if ($type === 'Cvičení') {
-            return TimeTable::ACTION_SEMINAR;
+            return TimeTableItem::ACTION_SEMINAR;
         }
 
-        return TimeTable::ACTION_OTHER;
+        return TimeTableItem::ACTION_OTHER;
     }
 
     private function resolveBuilding(string $str)

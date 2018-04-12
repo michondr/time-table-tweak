@@ -3,6 +3,7 @@
 namespace App\DateTime;
 
 use App\DateTime\Date\Date;
+use App\DateTime\Day\Day;
 use App\DateTime\Time\Time;
 use DateTime as DateTimePhp;
 use DateTimeZone;
@@ -93,25 +94,25 @@ class DateTimeFactory
     public function getDayNum(string $day)
     {
         if ($day === 'Po') {
-            return Date::DAY_MONDAY;
+            return Day::DAY_MONDAY;
         }
         if ($day === 'Út') {
-            return Date::DAY_TUESDAY;
+            return Day::DAY_TUESDAY;
         }
         if ($day === 'St') {
-            return Date::DAY_WEDNESDAY;
+            return Day::DAY_WEDNESDAY;
         }
         if ($day === 'Čt') {
-            return Date::DAY_THURSDAY;
+            return Day::DAY_THURSDAY;
         }
         if ($day === 'Pá') {
-            return Date::DAY_FRIDAY;
+            return Day::DAY_FRIDAY;
         }
         if ($day === 'So') {
-            return Date::DAY_SATURDAY;
+            return Day::DAY_SATURDAY;
         }
         if ($day === 'Ne') {
-            return Date::DAY_SUNDAY;
+            return Day::DAY_SUNDAY;
         }
         throw new \Exception('Unsupported day');
     }

@@ -17,7 +17,6 @@ class EntityFieldManager
                 $nullCount++;
             }
         }
-
         return $nullCount !== 0;
     }
 }

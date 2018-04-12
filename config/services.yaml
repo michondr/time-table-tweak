@@ -31,5 +31,8 @@ services:
     App\Entity\Location\LocationFacade: ~
     App\Entity\Subject\SubjectFacade: ~
     App\Entity\Teacher\TeacherFacade: ~
-    App\Entity\TimeTable\TimeTableFacade: ~
+    App\Entity\TimeTableItem\TimeTableItemFacade: ~
     App\Entity\User\UserFacade: ~
+
+#    App\DateTime\Day\DayTwigExtension:
+#        tags: ['twig.extension']

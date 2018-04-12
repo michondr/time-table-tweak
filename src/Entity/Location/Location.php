@@ -35,7 +35,7 @@ class Location extends EntityFieldManager
         return $this->id;
     }
 
-    public function getBuilding():? string
+    public function getBuilding(): ?string
     {
         return $this->building;
     }
@@ -62,4 +62,8 @@ class Location extends EntityFieldManager
         return $roomStr[0];
     }
 
+    public function getLocation()
+    {
+        return $this->building.$this->room;
+    }
 }

@@ -7,14 +7,6 @@ use DateTime as DateTimePhp;
 
 class Date
 {
-    const DAY_MONDAY = 1;
-    const DAY_TUESDAY = 2;
-    const DAY_WEDNESDAY = 3;
-    const DAY_THURSDAY = 4;
-    const DAY_FRIDAY = 5;
-    const DAY_SATURDAY = 6;
-    const DAY_SUNDAY = 7;
-
     private $year;
     private $month;
     private $day;
