@@ -66,7 +66,7 @@ class TimeTableItemFacade
         }
 
         if (is_null($lectures)) {
-            $items = $this->repository->findBy(['subject' => $ids, 'day' => $days]);
+            $items = $this->repository->findBy(['subject' => $ids, 'day' => $days, is_null('day')]);
         } else {
             if ($lectures) {
                 $items = $this->repository->findBy(['subject' => $ids, 'day' => $days, 'actionType' => 'lecture']);
@@ -75,7 +75,19 @@ class TimeTableItemFacade
             }
         }
 
+        foreach ($items as $key => $item){
+            if($item->hasEmptyFields()){
+                unset($items[$key]);
+            }
+        }
+
         shuffle($items);
+
         return $items;
+    }
+
+    public function getById(int $id)
+    {
+        return $this->repository->find($id);
     }
 }

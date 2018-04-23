@@ -8,14 +8,18 @@ use App\Entity\TimeTableItem\TimeTableItem;
 
 class TimeTable
 {
+    const EMPTY = null;
+
     /** @var array[] TimeTableItem */
     public $timeTableSchema = [];
 
-    public function __construct(array $days)
+    public function __construct()
     {
+        $days = [1, 2, 3, 4, 5];
+
         foreach ($days as $day) {
             foreach (self::getTimeIntervals() as $id => $interval) {
-                $this->timeTableSchema[$day][$id] = new TimeTableItem();
+                $this->timeTableSchema[$day][$id] = self::EMPTY;
             }
         }
     }
@@ -37,6 +41,8 @@ class TimeTable
             '12' => new TimeInterval(new Time(17, 0), new Time(17, 45)),
             '13' => new TimeInterval(new Time(18, 0), new Time(18, 45)),
             '14' => new TimeInterval(new Time(18, 45), new Time(19, 30)),
+            '15' => new TimeInterval(new Time(19, 45), new Time(20, 30)),
+            '16' => new TimeInterval(new Time(20, 30), new Time(21, 15)),
         ];
     }
 
@@ -52,7 +58,7 @@ class TimeTable
             }
         }
 
-        throw new \Exception('I dont have this start time');
+        throw new \Exception('I dont have this start time: '.$time->toMySql());
 //        return null;
     }
 
@@ -68,19 +74,41 @@ class TimeTable
             }
         }
 
-        throw new \Exception('I dont have this end time');
+        throw new \Exception('I dont have this end time: '.$time->toMySql());
 //        return null;
     }
 
     public function addItemToSchema(TimeTableItem $item)
     {
         foreach ($item->getTimeTableOccupiedIds() as $id) {
+
             /** @var TimeTableItem $elementOnLocation */
             $elementOnLocation = $this->timeTableSchema[$item->getDay()][$id];
-            if (!$elementOnLocation->hasEmptyFields()) {
+            if ($elementOnLocation !== self::EMPTY) {
                 throw new SchemaLocationOccupiedException($item);
             }
+
             $this->timeTableSchema[$item->getDay()][$id] = $item;
         }
     }
+
+    public function copy()
+    {
+        return clone $this;
+    }
+
+    public function getSize()
+    {
+        $count = 0;
+        foreach ($this->timeTableSchema as $day) {
+            $count += count(array_filter($day));
+        }
+
+        return $count;
+    }
+
+//    public function isDuplicitWith(TimeTable $other)
+//    {
+//
+//    }
 }

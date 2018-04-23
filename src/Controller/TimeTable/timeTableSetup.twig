@@ -5,6 +5,15 @@
 {% block body %}
     <h1>Hello {{ controller_name }}!</h1>
 
+    <script language="JavaScript">
+        function toggleSubjects() {
+            $('#form_subjects input:checkbox').each(function () {
+                $(this).click();
+            })
+        }
+    </script>
+    <button type="button" class="btn btn-primary" onclick="toggleSubjects()">Default button</button>
+
     {{ form_start(subjects_form) }}
     {{ form_row(subjects_form.subjects) }}
     {{ form_end(subjects_form) }}

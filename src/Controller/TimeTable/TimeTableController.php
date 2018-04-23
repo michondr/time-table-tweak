@@ -15,13 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TimeTableController extends Controller
 {
-    /**
-     * @var SubjectFacade
-     */
     private $subjectFacade;
-    /**
-     * @var TimeTableBuilder
-     */
     private $timeTableBuilder;
 
     public function __construct(
@@ -42,14 +36,14 @@ class TimeTableController extends Controller
 
         if ($setupForm->isSubmitted() and $setupForm->isValid()) {
 
-            $timetable = $this->timeTableBuilder->getTimeTable($setupForm->getData());
+            $timetable = $this->timeTableBuilder->getTimeTables($setupForm->getData());
             $this->addFlash(Flash::INFO, 'Successfully imported');
 
             return $this->render(
-                '@Controller/TimeTable/timeTableResult.twig',
+                '@Controller/TimeTable/timeTableResultCopy.twig',
                 [
                     'controller_name' => 'TimeTableBuilder - Result',
-                    'time_table' => $timetable,
+                    'time_tables' => $timetable,
                     'form_data' => $setupForm->getData(),
                     'time_intervals' => TimeTable::getTimeIntervals(),
                 ]

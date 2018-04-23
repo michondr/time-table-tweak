@@ -7,7 +7,6 @@ use App\Entity\TimeTableItem\TimeTableItemFacade;
 
 class TimeTableBuilder
 {
-
     /**
      * @var TimeTableItemFacade
      */
@@ -19,40 +18,64 @@ class TimeTableBuilder
         $this->timeTableItemFacade = $timeTableItemFacade;
     }
 
-    public function getTimeTable(array $formData)
+    public function getTimeTables(array $formData)
     {
         $subjects = $formData['subjects'];
         $days = $formData['days'];
 
-        $timeTable = new TimeTable($days);
+        $parents = [new TimeTable()];
+        $children = [];
 
-        foreach ($subjects as $subject){
+        $root = TreeNode::create(new TimeTable());
+
+        foreach ($subjects as $subject) {
+
             $lectures = $this->timeTableItemFacade->getBySubjects([$subject], $days, true);
-            $this->addItemsToTimeTable($timeTable, $lectures);
+            /** @var TreeNode $leaf */
+            foreach ($root->getLeaves() as $leaf) {
+                foreach ($lectures as $lecture) {
+                    $child = $this->addItemToTimeTable($leaf->getItem(), $lecture);
+                    if (!is_null($child)) {
+                        TreeNode::create($child, $leaf);
+                    }
+                }
+            }
 
             $seminars = $this->timeTableItemFacade->getBySubjects([$subject], $days, false);
-            $this->addItemsToTimeTable($timeTable, $seminars);
+            /** @var TreeNode $leaf */
+            foreach ($root->getLeaves() as $leaf) {
+                foreach ($seminars as $seminar) {
+                    $child = $this->addItemToTimeTable($leaf->getItem(), $seminar);
+                    if (!is_null($child)) {
+                        TreeNode::create($child, $leaf);
+                    }
+                }
+            }
         }
 
-
-//        die;
-        return $timeTable;
+        return $this->findDuplicities($root->getItemsOnHighestLeaves());
     }
 
-    private function addItemsToTimeTable(TimeTable $timeTable, array $items)
+    private function addItemToTimeTable(?TimeTable $timeTable, TimeTableItem $item)
     {
-        /** @var TimeTableItem $item */
-        foreach ($items as $item) {
-            $ids = $item->getTimeTableOccupiedIds();
-            if (count($ids) > 4) {
-                continue;
-            }
+        $timeTableClone = $timeTable->copy();
+        try {
+            $timeTableClone->addItemToSchema($item);
 
-            try {
-                $timeTable->addItemToSchema($item);
-            } catch (SchemaLocationOccupiedException $e) {
-                dump($e->__toString());
-            }
+            return $timeTableClone;
+        } catch (SchemaLocationOccupiedException $e) {
+//            dump($e->__toString());
+
+            return null;
         }
     }
+
+    private function findDuplicities(array $items)
+    {
+        $filtered = $items;
+
+//        foreach ()
+        return $filtered;
+    }
+
 }
