@@ -12,8 +12,8 @@
             })
         }
     </script>
-    <button type="button" class="btn btn-primary" onclick="toggleSubjects()">Default button</button>
 
+    <button type="button" class="btn btn-primary" onclick="toggleSubjects()" style="margin-top: 10px; margin-bottom: 10px">Invert selection</button>
     {{ form_start(subjects_form) }}
     {{ form_row(subjects_form.subjects) }}
     {{ form_end(subjects_form) }}
