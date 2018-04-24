@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-class EntityFieldManager
+class EntityFieldManager implements \JsonSerializable
 {
     public function hasEmptyFields()
     {
@@ -17,6 +17,12 @@ class EntityFieldManager
                 $nullCount++;
             }
         }
+
         return $nullCount !== 0;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->getId();
     }
 }

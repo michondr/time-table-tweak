@@ -203,7 +203,7 @@ class TimeTableItem extends EntityFieldManager
         $endingId = TimeTable::getIntervalIdByEndTime($this->getTimeTo());
         $ids = [];
 
-        while ($startingId <= $endingId){
+        while ($startingId <= $endingId) {
             $ids[] = $startingId;
             $startingId++;
         }

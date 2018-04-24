@@ -59,7 +59,6 @@ class TimeTable
         }
 
         throw new \Exception('I dont have this start time: '.$time->toMySql());
-//        return null;
     }
 
     public static function getIntervalIdByEndTime(Time $time)
@@ -75,7 +74,6 @@ class TimeTable
         }
 
         throw new \Exception('I dont have this end time: '.$time->toMySql());
-//        return null;
     }
 
     public function addItemToSchema(TimeTableItem $item)
@@ -106,9 +104,4 @@ class TimeTable
 
         return $count;
     }
-
-//    public function isDuplicitWith(TimeTable $other)
-//    {
-//
-//    }
 }
