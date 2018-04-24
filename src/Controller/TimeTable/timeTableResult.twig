@@ -1,41 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block stylesheets %}
+    <style>
+        .timetableTable {
+            text-align: center;
+        }
+
+        .timetableTableBlock {
+            margin-bottom: 100px;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Result{% endblock %}
 
 {% block body %}
-    <h1>Hello {{ controller_name }}!</h1>
+    <h1>Time_Table_Builder result! (for {{ form_subjectCount }} chosen subjects)</h1>
 {% endblock %}
 
 {% block body_fluid %}
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            {% for interval in time_intervals %}
-                <th scope="col" class="text-center">{{ interval.from.toMysql() }} <br/>-<br/> {{ interval.to.toMysql() }}</th>
-            {% endfor %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for id, day in time_table.timeTableSchema %}
-            <tr>
-                {% for interval in day %}
-                    {% if not interval.hasEmptyFields() %}
-                        <td>
-                            {{ interval.subject.indent }}<br/>
-                            {{ interval.location.location }}<br/>
-                            {{ interval.teacher.name }}<br/>
-                        </td>
-                    {% else %}
-                        <td class="text-info">empty</td>
-                    {% endif %}
+    {{ time_tables|length }}
+    {% for time_table in time_tables %}
+        <p class="text-danger">
+            size: {{ time_table.getSize() }},
+            index: {{ time_table.calculateIndex() }}
+        </p>
+        <div class="timetableTableBlock">
+
+            <table class="table table-hover timetableTable">
+                <thead>
+                <tr>
+                    {% for interval in time_intervals %}
+                        <th scope="col" class="text-center">{{ interval.from.toMysql() }} <br/>-<br/> {{ interval.to.toMysql() }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for id, day in time_table.timeTableSchema %}
+                    <tr>
+                        {% for interval in day %}
+                            {% if interval is not null and not interval.hasEmptyFields() %}
+                                <td class="{% if interval.actionType == 'lecture' %}text-info{% else %}text-warning{% endif %}">
+                                    {{ interval.subject.indent }}<br/>
+                                    {{ interval.location.location }}<br/>
+                                    {{ interval.teacher.name }}<br/>
+                                </td>
+                            {% else %}
+                                <td class="text-muted">empty</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
                 {% endfor %}
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {#{{ dump(form_data) }}#}
-    {#{{ form_start(subjects_form) }}#}
-    {#{{ form_row(subjects_form.subjects) }}#}
-    {#{{ form_end(subjects_form) }}#}
+                </tbody>
+            </table>
+        </div>
+
+    {% endfor %}
 
 {% endblock %}

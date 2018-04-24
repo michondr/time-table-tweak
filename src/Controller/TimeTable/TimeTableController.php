@@ -36,15 +36,14 @@ class TimeTableController extends Controller
 
         if ($setupForm->isSubmitted() and $setupForm->isValid()) {
 
-            $timetable = $this->timeTableBuilder->getTimeTables($setupForm->getData());
+            $timetables = $this->timeTableBuilder->getTimeTables($setupForm->getData());
             $this->addFlash(Flash::INFO, 'Successfully imported');
 
             return $this->render(
-                '@Controller/TimeTable/timeTableResultCopy.twig',
+                '@Controller/TimeTable/timeTableResult.twig',
                 [
-                    'controller_name' => 'TimeTableBuilder - Result',
-                    'time_tables' => $timetable,
-                    'form_data' => $setupForm->getData(),
+                    'time_tables' => $timetables,
+                    'form_subjectCount' => count($setupForm->getData()['subjects']),
                     'time_intervals' => TimeTable::getTimeIntervals(),
                 ]
             );

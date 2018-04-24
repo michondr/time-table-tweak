@@ -9,15 +9,14 @@ use App\Entity\TimeTableItem\TimeTableItem;
 class TimeTable
 {
     const EMPTY = null;
+    const WORKDAYS = [1, 2, 3, 4, 5];
 
     /** @var array[] TimeTableItem */
     public $timeTableSchema = [];
 
     public function __construct()
     {
-        $days = [1, 2, 3, 4, 5];
-
-        foreach ($days as $day) {
+        foreach (self::WORKDAYS as $day) {
             foreach (self::getTimeIntervals() as $id => $interval) {
                 $this->timeTableSchema[$day][$id] = self::EMPTY;
             }
@@ -103,5 +102,42 @@ class TimeTable
         }
 
         return $count;
+    }
+
+    /**
+     * all indexes are in interval <0;1>
+     * $dayDispersionIndex - "blockness" of day - the more spaces are between subjects, the lower index
+     * $freeDayIndex - the more free days I have, the higher number
+     *
+     * max value is 1 - that means, that all subjects ar in one block.
+     * the lower this value is, the more are subjects in timetable spread out
+     *
+     * @return float
+     */
+    public function calculateIndex()
+    {
+        $semiIndex = 0;
+        $freeDays = 0;
+
+        foreach ($this->timeTableSchema as $day) {
+            $ids = array_keys(array_filter($day));
+
+            if (empty($ids)) {
+                $freeDays++;
+                continue;
+            }
+
+            $size = count($ids);
+            $first = current($ids);
+            $last = end($ids);
+
+            $fullSize = $last - $first + 1;
+            $semiIndex += $size / $fullSize;
+        }
+
+        $dayDispersionIndex = $semiIndex / count(self::WORKDAYS);
+        $freeDayIndex = $freeDays / count(self::WORKDAYS);
+
+        return round($dayDispersionIndex + $freeDayIndex, 3);
     }
 }
