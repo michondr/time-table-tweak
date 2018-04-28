@@ -12,7 +12,6 @@ class OverviewController extends Controller
      */
     public function index()
     {
-        dump($this->getUser());
         return $this->render(
             '@Controller/Overview/overview.html.twig',
             [
