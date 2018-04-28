@@ -12,7 +12,7 @@ class Subject extends EntityFieldManager
 {
     /**
      * @ORM\Id()
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=10)
      */
     private $indent;
 
