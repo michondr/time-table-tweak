@@ -15,17 +15,28 @@ class TimeTableBuilder
         $this->timeTableItemFacade = $timeTableItemFacade;
     }
 
-    public function getTimeTables(array $formData)
+    public function getTimeTablesMulti(array $formData)
     {
         $subjects = $formData['subjects'];
-        $days = $formData['days'];
+        $items = [];
+        foreach (range(1, count($subjects)) as $index) {
+            array_push($subjects, array_shift($subjects));
+            $items = array_merge($items, $this->getTimeTables($subjects));
+        }
 
+        $items = array_unique($items);
+        $items = $this->sort($items);
+
+        return $items;
+    }
+
+    public function getTimeTables(array $subjects)
+    {
         $root = TreeNode::create(new TimeTable());
 
         foreach ($subjects as $subject) {
-            $baseRoot = clone $root;
 
-            $lectures = $this->timeTableItemFacade->getBySubjects([$subject], $days, true);
+            $lectures = $this->timeTableItemFacade->getBySubjects([$subject], true);
             $lecturesAdded = 0;
             /** @var TreeNode $leaf */
             foreach ($root->getLeaves() as $leaf) {
@@ -39,11 +50,10 @@ class TimeTableBuilder
             }
             $lecturesAddedCorrectly = (empty($lectures) or $lecturesAdded > 0);
             if (!$lecturesAddedCorrectly) {
-                $root = $baseRoot;
                 continue;
             }
 
-            $seminars = $this->timeTableItemFacade->getBySubjects([$subject], $days, false);
+            $seminars = $this->timeTableItemFacade->getBySubjects([$subject], false);
             $seminarsAdded = 0;
             /** @var TreeNode $leaf */
             foreach ($root->getLeaves() as $leaf) {
@@ -55,33 +65,31 @@ class TimeTableBuilder
                     }
                 }
             }
+
             $seminarsAddedCorrectly = (empty($seminars) or $seminarsAdded > 0);
-            if (!$seminarsAddedCorrectly and !$lecturesAddedCorrectly) {
-                $root = $baseRoot;
+            if (!$seminarsAddedCorrectly) {
+                foreach ($root->getLeaves() as $leaf) {
+
+                    /** @var TimeTable $item */
+                    $item = $leaf->getItem();
+                    $lastItem = $item->getLastAddedItem();
+
+                    if (!is_null($lastItem) and $lastItem->getSubject() == $subject and $lastItem->getActionType() == 'lecture') {
+                        $root->removeLeaf($leaf);
+                    }
+                }
             }
         }
 
-        $leaves = $root->getItemsOnHighestLeaves();
+        $items = $root->getItemsOnHighestLeaves();
+        $items = $this->sort($items);
 
-        $result = usort(
-            $leaves,
-            function ($a, $b) {
-                /** @var TimeTable $a */
-                /** @var TimeTable $b */
-                return $a->calculateIndex() < $b->calculateIndex();
-            }
-        );
-
-        if ($result === false) {
-            throw new \Exception('TimeTableBuilder was unable to sort leaves');
-        }
-
-        return $leaves;
+        return array_slice($items, 0, 15);
     }
 
     private function addItemToTimeTable(?TimeTable $timeTable, TimeTableItem $item)
     {
-        $timeTableClone = $timeTable->copy();
+        $timeTableClone = clone $timeTable;
         try {
             $timeTableClone->addItemToSchema($item);
 
@@ -91,5 +99,27 @@ class TimeTableBuilder
 
             return null;
         }
+    }
+
+    private function sort(array $items)
+    {
+        $result = usort(
+            $items,
+            function ($a, $b) {
+                /** @var TimeTable $a */
+                /** @var TimeTable $b */
+                if (count($a->getSubjects()) == count($b->getSubjects())) {
+                    return $a->calculateIndex() < $b->calculateIndex();
+                } else {
+                    return count($a->getSubjects()) < count($b->getSubjects());
+                }
+            }
+        );
+
+        if ($result === false) {
+            throw new \Exception('TimeTableBuilder was unable to sort by index');
+        }
+
+        return $items;
     }
 }

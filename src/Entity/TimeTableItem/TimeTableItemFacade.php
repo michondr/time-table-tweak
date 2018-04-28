@@ -51,37 +51,28 @@ class TimeTableItemFacade
     }
 
     /**
-     * @param array     $subjects
+     * @param Subject[] $subjects
      * @param bool|null $lectures - true -> only lectures, false -> only seminars, null -> both
      *
      * @return TimeTableItem[]|array
      */
-    public function getBySubjects(array $subjects, array $days, bool $lectures = null)
+    public function getBySubjects(array $subjects, bool $lectures = null)
     {
-        $ids = [];
-
-        /** @var Subject $subject */
-        foreach ($subjects as $subject) {
-            $ids[] = $subject->getId();
-        }
-
         if (is_null($lectures)) {
-            $items = $this->repository->findBy(['subject' => $ids, 'day' => $days, is_null('day')]);
+            $items = $this->repository->findBy(['subject' => $subjects]);
         } else {
             if ($lectures) {
-                $items = $this->repository->findBy(['subject' => $ids, 'day' => $days, 'actionType' => 'lecture']);
+                $items = $this->repository->findBy(['subject' => $subjects, 'actionType' => 'lecture']);
             } else {
-                $items = $this->repository->findBy(['subject' => $ids, 'day' => $days, 'actionType' => 'seminar']);
+                $items = $this->repository->findBy(['subject' => $subjects, 'actionType' => 'seminar']);
             }
         }
 
-        foreach ($items as $key => $item){
-            if($item->hasEmptyFields()){
+        foreach ($items as $key => $item) {
+            if ($item->hasEmptyFields()) {
                 unset($items[$key]);
             }
         }
-
-        shuffle($items);
 
         return $items;
     }

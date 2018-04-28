@@ -1,15 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block h1 %}Hello <span class="text-info">{{ app.user.username }}</span>!{% endblock %}
 
 {% block body %}
-    <div class="page-header">
-        <h1>Hello {{ controller_name }}</h1>
-    </div>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>src/Controller/OverviewController.php</code></li>
-        <li>Your template at <code>templates/overview/index.html.twig</code></li>
-    </ul>
+    <p>
+        This software if built to help you in creating your new timetable.
+    </p>
+    <p>
+        In navbar click "timetable" to select subjects you prefer, choose what you like, and keep the algorithm to its job. This returns best combinations of all the subjects you choose
+    </p>
 {% endblock %}

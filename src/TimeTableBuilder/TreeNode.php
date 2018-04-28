@@ -52,6 +52,11 @@ class TreeNode
         return $this->children;
     }
 
+    public function setChildren(array $children)
+    {
+        $this->children = $children;
+    }
+
     public function addChild(TreeNode $node)
     {
         $this->children[] = $node;
@@ -124,4 +129,15 @@ class TreeNode
         return $items;
     }
 
+    public function removeLeaf(TreeNode $leaf)
+    {
+        $par = $leaf->getParent();
+        $clean = [];
+        foreach ($par->getChildren() as $item) {
+            if (!$item === $leaf) {
+                $clean[] = $item;
+            }
+        }
+        $par->setChildren($clean);
+    }
 }

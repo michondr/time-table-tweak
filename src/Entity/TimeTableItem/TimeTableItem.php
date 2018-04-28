@@ -10,8 +10,8 @@ use App\Entity\Teacher\Teacher;
 use App\TimeTableBuilder\TimeTable;
 use Doctrine\ORM\Mapping as ORM;
 
-/** @ORM\Entity(repositoryClass="App\Entity\TimeTableItem\TimeTableItemRepository") */
-class TimeTableItem extends EntityFieldManager
+/** @ORM\Entity() */
+class TimeTableItem extends EntityFieldManager implements \JsonSerializable
 {
     const ACTION_SEMINAR = 'seminar';
     const ACTION_LECTURE = 'lecture';
@@ -26,18 +26,18 @@ class TimeTableItem extends EntityFieldManager
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Subject\Subject", cascade={"persist"})
-     * @ORM\JoinColumn(name="subject", referencedColumnName="id")
+     * @ORM\JoinColumn(name="subject", referencedColumnName="indent")
      */
     private $subject;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Teacher\Teacher", cascade={"persist"}, fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Teacher\Teacher", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="teacher", referencedColumnName="id", nullable=true)
      */
     private $teacher;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Location\Location", cascade={"persist"}, fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Location\Location", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="location", referencedColumnName="id", nullable=true)
      */
     private $location;
@@ -209,5 +209,10 @@ class TimeTableItem extends EntityFieldManager
         }
 
         return $ids;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->getId();
     }
 }

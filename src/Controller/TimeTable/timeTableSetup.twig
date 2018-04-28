@@ -1,9 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}Subjects selection{% endblock %}
 
 {% block body %}
-    <h1>Hello {{ controller_name }}!</h1>
 
     <script language="JavaScript">
         function toggleSubjects() {
@@ -13,9 +12,14 @@
         }
     </script>
 
-    <button type="button" class="btn btn-primary" onclick="toggleSubjects()" style="margin-top: 10px; margin-bottom: 10px">Invert selection</button>
     {{ form_start(subjects_form) }}
-    {{ form_row(subjects_form.subjects) }}
+    {{ form_widget(subjects_form) }}
+    <div class="row">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" value="save" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-default" onclick="toggleSubjects()">Invert selection</button>
+        </div>
+    </div>
     {{ form_end(subjects_form) }}
 
 {% endblock %}

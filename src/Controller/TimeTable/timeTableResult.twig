@@ -13,18 +13,26 @@
 {% endblock %}
 
 {% block title %}Result{% endblock %}
-
-{% block body %}
-    <h1>Time_Table_Builder result! (for {{ form_subjectCount }} chosen subjects)</h1>
-{% endblock %}
+{% block h1 %}Time_Table_Builder result!
+    <small class="text-muted">{{ time_tables|length }} variants for {{ form_subjects|length }} subjects</small>{% endblock %}
 
 {% block body_fluid %}
-    {{ time_tables|length }}
     {% for time_table in time_tables %}
-        <p class="text-danger">
-            size: {{ time_table.getSize() }},
-            index: {{ time_table.calculateIndex() }}
-        </p>
+        <h5>
+
+            index: {{ time_table.calculateIndex }},
+            size: {{ time_table.subjects|length }}
+            (
+            {% for item in form_subjects %}
+                {% if item.indent in time_table.subjects(true) %}
+                    <span class="text-success">{{ item }}</span>
+                {% else %}
+                    <span class="text-danger">{{ item }}</span>
+                {% endif %}
+            {% endfor %}
+            )
+        </h5>
+
         <div class="timetableTableBlock">
 
             <table class="table table-hover timetableTable">
@@ -46,7 +54,7 @@
                                     {{ interval.teacher.name }}<br/>
                                 </td>
                             {% else %}
-                                <td class="text-muted">empty</td>
+                                <td class="text-muted"><small>empty</small></td>
                             {% endif %}
                         {% endfor %}
                     </tr>

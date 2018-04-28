@@ -6,18 +6,12 @@ use App\Entity\EntityFieldManager;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Entity\Subject\SubjectRepository")
+ * @ORM\Entity()
  */
 class Subject extends EntityFieldManager
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
      * @ORM\Column(type="string")
      */
     private $indent;
@@ -26,16 +20,6 @@ class Subject extends EntityFieldManager
      * @ORM\Column(type="string")
      */
     private $name;
-
-    public function __toString()
-    {
-        return (string)$this->id;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     public function getIndent(): string
     {
@@ -62,4 +46,8 @@ class Subject extends EntityFieldManager
         return $this->getIndent().' '.$this->getName();
     }
 
+    public function __toString()
+    {
+        return (string)$this->getIndent();
+    }
 }

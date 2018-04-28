@@ -2,14 +2,11 @@
 
 namespace App\Controller\TimeTable;
 
-use App\Controller\Flash;
-use App\DateTime\Day\Day;
 use App\Entity\Subject\SubjectFacade;
 use App\TimeTableBuilder\TimeTable;
 use App\TimeTableBuilder\TimeTableBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -36,14 +33,13 @@ class TimeTableController extends Controller
 
         if ($setupForm->isSubmitted() and $setupForm->isValid()) {
 
-            $timetables = $this->timeTableBuilder->getTimeTables($setupForm->getData());
-            $this->addFlash(Flash::INFO, 'Successfully imported');
+            $timetables = $this->timeTableBuilder->getTimeTablesMulti($setupForm->getData());
 
             return $this->render(
                 '@Controller/TimeTable/timeTableResult.twig',
                 [
                     'time_tables' => $timetables,
-                    'form_subjectCount' => count($setupForm->getData()['subjects']),
+                    'form_subjects' => $setupForm->getData()['subjects'],
                     'time_intervals' => TimeTable::getTimeIntervals(),
                 ]
             );
@@ -58,7 +54,7 @@ class TimeTableController extends Controller
         );
     }
 
-    public function getSubjectsForm()
+    private function getSubjectsForm()
     {
         $form = $this->createFormBuilder()
             ->add(
@@ -67,35 +63,11 @@ class TimeTableController extends Controller
                 [
                     'choices' => $this->subjectFacade->getAll(),
                     'choice_label' => 'viewName',
-                    'choice_value' => 'id',
+                    'choice_value' => 'indent',
                     'expanded' => true,
                     'multiple' => true,
                     'label_attr' => ['class' => 'checkbox-custom'],
                 ]
-            )
-            ->add(
-                'days',
-                ChoiceType::class,
-                [
-                    'choices' => [
-                        'Monday' => '1',
-                        'Tuesday' => '2',
-                        'Wednesday' => '3',
-                        'Thursday' => '4',
-                        'Friday' => '5',
-                    ],
-                    'expanded' => true,
-                    'multiple' => true,
-                    'label_attr' => ['class' => 'checkbox-custom'],
-                    'choice_attr' => function () {
-                        return ['checked' => 'checked'];
-                    },
-                ]
-            )
-            ->add(
-                'submit',
-                SubmitType::class,
-                ['attr' => ['class' => 'btn-primary']]
             )
             ->getForm();
 

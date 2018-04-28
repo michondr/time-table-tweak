@@ -9,10 +9,12 @@ use App\Entity\TimeTableItem\TimeTableItem;
 class TimeTable
 {
     const EMPTY = null;
-    const WORKDAYS = [1, 2, 3, 4, 5];
+    const WORKDAYS = [1, 2, 3, 4, 5, 6, 7];
 
-    /** @var array[] TimeTableItem */
+    /** @var array[] $timeTableSchema */
     public $timeTableSchema = [];
+    /** @var TimeTableItem $lastAddedItem */
+    public $lastAddedItem = null;
 
     public function __construct()
     {
@@ -86,22 +88,32 @@ class TimeTable
             }
 
             $this->timeTableSchema[$item->getDay()][$id] = $item;
+            $this->lastAddedItem = $item;
         }
     }
 
-    public function copy()
+    public function getSubjects(bool $returnIndents = false)
     {
-        return clone $this;
-    }
+        $subjects = [];
 
-    public function getSize()
-    {
-        $count = 0;
         foreach ($this->timeTableSchema as $day) {
-            $count += count(array_filter($day));
+            /** @var TimeTableItem $item */
+            foreach (array_filter($day) as $item) {
+                $subjects[] = $returnIndents ? $item->getSubject()->getIndent() : $item->getSubject();
+            }
         }
 
-        return $count;
+        return array_unique($subjects);
+    }
+
+    public function getLastAddedItem(): ?TimeTableItem
+    {
+        return $this->lastAddedItem;
+    }
+
+    public function __toString()
+    {
+        return json_encode($this->timeTableSchema);
     }
 
     /**
@@ -136,8 +148,7 @@ class TimeTable
         }
 
         $dayDispersionIndex = $semiIndex / count(self::WORKDAYS);
-        $freeDayIndex = $freeDays / count(self::WORKDAYS);
 
-        return round($dayDispersionIndex + $freeDayIndex, 3);
+        return round($dayDispersionIndex + $freeDays, 3);
     }
 }
