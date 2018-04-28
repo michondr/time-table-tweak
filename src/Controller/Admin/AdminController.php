@@ -42,8 +42,12 @@ class AdminController extends Controller
      */
     public function changeUserStatus(int $id)
     {
-        $this->userFacade->changeStatus($id);
-        $this->addFlash(Flash::SUCCESS, 'Successfully changed user status');
+        $result = $this->userFacade->changeStatus($id);
+        if($result){
+            $this->addFlash(Flash::SUCCESS, 'Successfully changed user status');
+        } else{
+            $this->addFlash(Flash::ERROR, 'This user is super admin, you cannot deactivate this fella');
+        }
 
         return $this->redirectToRoute('admin');
     }

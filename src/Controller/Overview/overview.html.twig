@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}Overview{% endblock %}
 {% block h1 %}Hello <span class="text-info">{{ app.user.username }}</span>!{% endblock %}
 
 {% block body %}
@@ -8,6 +8,23 @@
         This software if built to help you in creating your new timetable.
     </p>
     <p>
-        In navbar click "timetable" to select subjects you prefer, choose what you like, and keep the algorithm to its job. This returns best combinations of all the subjects you choose
+        In navbar click "timetable" to select subjects you prefer, choose what you like, and keep the algorithm to its job. This returns best
+        combinations of all the subjects you choose
     </p>
+    <h4>Result structure</h4>
+    <p>
+        When variants are show, you will be also presented with two valued - index and size:
+    </p>
+    <ul>
+        <li>index: consist of two parts - full number represents free days of week and decimal part represents "day dispersion index" - value representing empty hours in between subjects, if some are present</li>
+        <li>size: number of subjects which could be crimed into time table (with distinguished colour based on presence in aforementioned timetable)</li>
+    </ul>
+    <p>
+        items in timetable are differentiated by colour according to action type:
+    </p>
+    <ul>
+        <li>blue: lecture</li>
+        <li>orange: seminar</li>
+    </ul>
+
 {% endblock %}

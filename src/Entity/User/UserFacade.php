@@ -90,7 +90,13 @@ class UserFacade
     public function changeStatus(int $id)
     {
         $user = $this->getById($id);
+
+        if ($user->hasRole('ROLE_SUPER_ADMIN')) {
+            return false;
+        }
         $user->setIsActive(!$user->isActive());
         $this->update($user);
+
+        return true;
     }
 }

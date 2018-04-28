@@ -93,6 +93,11 @@ class User implements UserInterface, \Serializable
         return array_merge($rolesFull, ['ROLE_DEACTIVATED']);
     }
 
+    public function hasRole(string $role)
+    {
+        return in_array($role, $this->getRoles());
+    }
+
     public function eraseCredentials()
     {
     }
@@ -148,7 +153,7 @@ class User implements UserInterface, \Serializable
         $this->isActive = $isActive;
     }
 
-    public function getAddedAt(): ? DateTime
+    public function getAddedAt(): ?DateTime
     {
         return $this->addedAt;
     }
