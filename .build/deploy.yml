@@ -21,14 +21,18 @@
         repo: "https://github.com/michondr/my-project"
         dest: '{{ app_path }}'
         clone: yes
+        force: yes
         accept_hostkey: yes
         update: yes
-        version: master
+        version: "{{ branch | default('master') }}"
+
+    - name: set env to project
+      shell: cp /home/{{ ansible_user }}/.time_table_tweak_env {{ app_path }}/.env
 
     - name: run composer install
-      shell: cd {{ app_path }} && composer install
+      shell: composer install --working-dir {{ app_path }}
 
-    - name: run composer install
-      shell: cd {{ app_path }} && bin/console cache:clear
+    - name: clear cache
+      shell: php {{ app_path }}/bin/console cache:clear
 
   post_tasks:
