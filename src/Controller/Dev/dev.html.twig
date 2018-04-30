@@ -3,7 +3,7 @@
 {% block title %}Hello {{ controller_name }}!{% endblock %}
 
 {% block body %}
-    <h1>Hello {{ controller_name }}!</h1>
-
-    {{ dump(data) }}
+    {% for key, item in data %}
+        <p>{{ key }} - {{ item }}</p>
+    {% endfor %}
 {% endblock %}

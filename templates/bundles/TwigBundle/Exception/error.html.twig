@@ -1,17 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ status_code }}{% endblock %}
+{% block h1 %}Oops! An Error Occurred{% endblock %}
 
 {% block body %}
-    <h1>Oops! An Error Occurred</h1>
-
     <h4> The server returned {{ status_code }}</h4>
     <p>Message: {{ status_text }}</p>
-    <p> Something is broken. Please let us know what you were doing when this error occurred. We will fix it as soon as possible. Sorry for any
-        inconvenience caused.</p>
+    <p>Something is broken. We already know why this happened and we will fix it as soon as possible. Sorry for any inconvenience caused.</p>
 
     {% if app.user and is_granted('ROLE_DEV') %}
-        <p>{{ dump(exception) }}</p>
+        <h4>Trace</h4>
+        <p>message: {{ exception.message }}</p>
+        <p>file: {{ exception.file }}</p>
+        <p>line: {{ exception.line }}</p>
+        <p>code: {{ exception.code }}</p>
+        {% for trace in exception.trace %}
+            <p>{{ trace|json_encode }}</p>
+        {% endfor %}
     {% endif %}
 
 {% endblock %}

@@ -1,0 +1,54 @@
+- hosts: michondr
+  gather_facts: no
+
+  vars:
+    nginx_max_conns: 30
+    nginx_http_port: 80
+    nginx_client_max_body_size: 1M
+
+    app_path: /home/{{ ansible_user }}/my-project
+    app_http_port: 8090
+
+  remote_user: '{{ ansible_user }}'
+
+  handlers:
+  pre_tasks:
+  roles:
+
+  tasks:
+    - name: ensure application directory is present
+      become: yes
+      file:
+        path: '{{ app_path }}'
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+        mode: 0750
+        state: directory
+
+    - name: clone gitconfog
+      git:
+        repo: "https://github.com/michondr/gitconfig"
+        dest: /home/{{ ansible_user }}/gitconfig
+        clone: yes
+        accept_hostkey: yes
+        update: yes
+
+    - name: edit .gitconfig
+      lineinfile:
+        path: /home/{{ ansible_user}}/.gitconfig
+        create: yes
+        line: '{{ item }}'
+      with_items:
+        - '[include]'
+        - '     path = ~/gitconfig/gitconfig'
+
+    - name: checkout app from git repo
+      git:
+        repo: "https://github.com/michondr/my-project"
+        dest: '{{ app_path }}'
+        clone: yes
+        accept_hostkey: yes
+        update: yes
+        version: master
+
+  post_tasks:
