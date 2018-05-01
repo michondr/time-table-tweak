@@ -2,6 +2,7 @@
 
 namespace App\Controller\TimeTable;
 
+use App\Controller\Flash;
 use App\Entity\Subject\SubjectFacade;
 use App\TimeTableBuilder\TimeTable;
 use App\TimeTableBuilder\TimeTableBuilder;
@@ -32,6 +33,17 @@ class TimeTableController extends Controller
         $setupForm->handleRequest($request);
 
         if ($setupForm->isSubmitted() and $setupForm->isValid()) {
+
+            if (count($setupForm->getData()['subjects']) > 20) {
+                $this->addFlash(Flash::WARNING, 'Please select no more than 20 subjects at once');
+
+                return $this->render(
+                    '@Controller/TimeTable/timeTableSetup.twig',
+                    [
+                        'subjects_form' => $setupForm->createView(),
+                    ]
+                );
+            }
 
             $timetables = $this->timeTableBuilder->getTimeTablesMulti($setupForm->getData());
 
