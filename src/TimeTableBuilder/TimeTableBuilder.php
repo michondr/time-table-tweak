@@ -7,6 +7,8 @@ use App\Entity\TimeTableItem\TimeTableItemFacade;
 
 class TimeTableBuilder
 {
+    const ALLOWED_PROCESSING_SECONDS = 10;
+
     private $timeTableItemFacade;
 
     public function __construct(
@@ -17,11 +19,18 @@ class TimeTableBuilder
 
     public function getTimeTablesMulti(array $formData)
     {
+        // no clue why, but micro time gives me seconds
+        $startTime = microtime(true);
+
         $subjects = $formData['subjects'];
         $items = [];
         foreach (range(1, count($subjects)) as $index) {
             array_push($subjects, array_shift($subjects));
-            $items = array_merge($items, $this->getTimeTables($subjects));
+
+            $nowTime = microtime(true);
+            if (($nowTime - $startTime) < self::ALLOWED_PROCESSING_SECONDS) {
+                $items = array_merge($items, $this->getTimeTables($subjects));
+            }
         }
 
         $items = array_unique($items);
