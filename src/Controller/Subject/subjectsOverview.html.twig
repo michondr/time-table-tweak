@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Subjects{% endblock %}
+
+{% block body %}
+    {% for subject in subjects %}
+        <a href="{{ path('subject.overview', {'indent' : subject.indent}) }}">{{ subject.viewName }}</a><br>
+    {% endfor %}
+{% endblock %}
+
+{% block body_fluid %}
+    {% for time_table in time_tables %}
+        {% if loop.first %}
+            <h3>Lectures</h3>
+        {% else %}
+            <h3>Seminars</h3>
+        {% endif %}
+        <table class="table table-hover timetableTable">
+            <thead>
+            <tr>
+                {% for interval in time_intervals %}
+                    <th scope="col" class="text-center">{{ interval.from.toMysql() }} <br/>-<br/> {{ interval.to.toMysql() }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for day in time_table.timeTableSchema %}
+                {% set shouldHideDay = time_table.isDayEmpty(loop.index) and loop.index in [6,7] %}
+                {% if not shouldHideDay %}
+                    <tr>
+                        {% for interval in day %}
+                            {% if interval is not null and not interval.hasEmptyFields() %}
+                                <td class="{% if interval.actionType == 'lecture' %}text-info{% else %}text-warning{% endif %}">
+                                    {{ interval.subject.indent }}<br/>
+                                    {{ interval.location.location }}<br/>
+                                    {{ interval.teacher.name }}<br/>
+                                </td>
+                            {% else %}
+                                <td class="text-muted">
+                                    <small>empty</small>
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <br>
+        <br>
+    {% endfor %}
+
+{% endblock %}

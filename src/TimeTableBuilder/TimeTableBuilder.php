@@ -8,6 +8,7 @@ use App\Entity\TimeTableItem\TimeTableItemFacade;
 class TimeTableBuilder
 {
     const ALLOWED_PROCESSING_SECONDS = 10;
+    const MAX_RETURN_SIZE = 50;
 
     private $timeTableItemFacade;
 
@@ -36,7 +37,7 @@ class TimeTableBuilder
         $items = array_unique($items);
         $items = $this->sort($items);
 
-        return $items;
+        return array_slice($items, 0, self::MAX_RETURN_SIZE);
     }
 
     public function getTimeTables(array $subjects)

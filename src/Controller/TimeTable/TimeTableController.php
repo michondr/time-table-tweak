@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TimeTableController extends Controller
 {
+    const MAX_TABLE_SELECT_LIMIT = 25;
+
     private $subjectFacade;
     private $timeTableBuilder;
 
@@ -34,8 +36,8 @@ class TimeTableController extends Controller
 
         if ($setupForm->isSubmitted() and $setupForm->isValid()) {
 
-            if (count($setupForm->getData()['subjects']) > 20) {
-                $this->addFlash(Flash::WARNING, 'Please select no more than 20 subjects at once');
+            if (count($setupForm->getData()['subjects']) > self::MAX_TABLE_SELECT_LIMIT) {
+                $this->addFlash(Flash::WARNING, 'Please select no more than '.self::MAX_TABLE_SELECT_LIMIT.' subjects at once');
 
                 return $this->render(
                     '@Controller/TimeTable/timeTableSetup.twig',

@@ -64,6 +64,12 @@ class Location extends EntityFieldManager
 
     public function getLocation()
     {
-        return $this->building.$this->room;
+        if($this->getRoom() == 0){
+            $room = '';
+        } else{
+            $room = $this->getRoom();
+        }
+
+        return $this->building.$room;
     }
 }

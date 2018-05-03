@@ -151,4 +151,9 @@ class TimeTable
 
         return round($dayDispersionIndex + $freeDays, 3);
     }
+
+    public function isDayEmpty(int $day)
+    {
+        return empty(array_filter($this->timeTableSchema[$day]));
+    }
 }
