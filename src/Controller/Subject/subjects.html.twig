@@ -4,7 +4,7 @@
 
 {% block body %}
     {% for subject in subjects %}
-        <a href="{{ path('subject.overview', {'indent' : subject.indent}) }}">{{ subject.viewName }}</a><br>
+        <a href="{{ path('subject', {'indent' : subject.indent}) }}">{{ subject.viewName }}</a><br>
     {% endfor %}
 {% endblock %}
 
@@ -29,11 +29,16 @@
                 {% if not shouldHideDay %}
                     <tr>
                         {% for interval in day %}
-                            {% if interval is not null and not interval.hasEmptyFields() %}
-                                <td class="{% if interval.actionType == 'lecture' %}text-info{% else %}text-warning{% endif %}">
-                                    {{ interval.subject.indent }}<br/>
-                                    {{ interval.location.location }}<br/>
-                                    {{ interval.teacher.name }}<br/>
+                            {% if interval|first != '' and not interval|first.hasEmptyFields() %}
+                                <td class="{% if interval|first.actionType == 'lecture' %}text-info{% else %}text-warning{% endif %}">
+                                    {% for subject in interval %}
+                                        {% if not loop.first %}
+                                            <hr>
+                                        {% endif %}
+                                        {{ subject.subject.indent }}<br/>
+                                        {{ subject.location.location }}<br/>
+                                        {{ subject.teacher.name }}<br/>
+                                    {% endfor %}
                                 </td>
                             {% else %}
                                 <td class="text-muted">

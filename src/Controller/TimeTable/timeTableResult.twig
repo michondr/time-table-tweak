@@ -25,9 +25,9 @@
             (
             {% for item in form_subjects %}
                 {% if item.indent in time_table.subjects(true) %}
-                    <span class="text-success">{{ item }}</span>
+                    <a class="text-success" href="{{ path('subject', {'indent': item.getIndent}) }}">{{ item }}</a>
                 {% else %}
-                    <span class="text-danger">{{ item }}</span>
+                    <a class="text-danger" href="{{ path('subject', {'indent': item.getIndent}) }}">{{ item }}</a>
                 {% endif %}
             {% endfor %}
             )

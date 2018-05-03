@@ -2,13 +2,10 @@
 
 namespace App\Controller\Subject;
 
-use App\DateTime\Day\Day;
 use App\Entity\Subject\SubjectFacade;
 use App\Entity\TimeTableItem\TimeTableItem;
 use App\Entity\TimeTableItem\TimeTableItemFacade;
-use App\TimeTableBuilder\SchemaLocationOccupiedException;
 use App\TimeTableBuilder\TimeTable;
-use App\TimeTableBuilder\TimeTableBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,20 +14,17 @@ class SubjectController extends Controller
 {
     private $subjectFacade;
     private $timeTableItemFacade;
-    private $timeTableBuilder;
 
     public function __construct(
         SubjectFacade $subjectFacade,
-        TimeTableItemFacade $timeTableItemFacade,
-        TimeTableBuilder $timeTableBuilder
+        TimeTableItemFacade $timeTableItemFacade
     ) {
         $this->subjectFacade = $subjectFacade;
         $this->timeTableItemFacade = $timeTableItemFacade;
-        $this->timeTableBuilder = $timeTableBuilder;
     }
 
     /**
-     * @Route("/subjects", name="subject.overview")
+     * @Route("/subjects", name="subject")
      */
     public function index(Request $request)
     {
@@ -48,7 +42,7 @@ class SubjectController extends Controller
         }
 
         return $this->render(
-            '@Controller/Subject/subjectsOverview.html.twig',
+            '@Controller/Subject/subjects.html.twig',
             [
                 'subjects' => $subjects,
                 'time_tables' => $timeTables,
@@ -62,15 +56,8 @@ class SubjectController extends Controller
         $t = new TimeTable();
         /** @var TimeTableItem $item */
         foreach ($items as $item) {
-            try {
-                $t->addItemToSchema($item);
-            } catch (SchemaLocationOccupiedException $e) {
-                var_dump(
-                    'could not add '.$item->getActionType().
-                    ' on '.Day::getDayName($item->getDay()).
-                    ' from '.$item->getTimeFrom()->toMySql().
-                    ' to '.$item->getTimeTo()->toMySql()
-                );
+            foreach ($item->getTimeTableOccupiedIds() as $id) {
+                $t->timeTableSchema[$item->getDay()][$id][] = $item;
             }
         }
 
