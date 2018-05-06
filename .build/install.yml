@@ -1,64 +1,93 @@
-- hosts: me
+- hosts: michondr
   gather_facts: no
 
   vars:
-    nginx_max_conns: 30
-    nginx_http_port: 80
-    nginx_client_max_body_size: 1M
+    project_folder: my-project
+    app_path: /home/{{ ansible_user }}/{{ project_folder }}
+    nxinx_host: time-table-tweak
 
-    app_path: /home/{{ ansible_user }}/my-project
-    app_http_port: 8090
+  vars_prompt:
+    - name: "symfony_env"
+      prompt: "application enviroment"
+      default: "prod"
+
+    - name: "db_host"
+      prompt: "database host"
+      default: "127.0.0.1"
+
+    - name: "db_port"
+      prompt: "database port"
+      default: "3306"
+
+    - name: "db_name"
+      prompt: "database name"
+      default: "time_table_tweak"
+
+    - name: "db_user"
+      prompt: "database user"
+      default: "root"
+
+    - name: "db_pass"
+      prompt: "database password"
+      default: "root"
+
+    - name: "sentry_dns"
+      prompt: "sentry dns"
+      default: "https://f1228f06faee4b5a8c7ea7cb3c965be9:21f82bc3901941938096cb1ac9c37e26@sentry.io/1198135"
 
   remote_user: '{{ ansible_user }}'
 
-  handlers:
   pre_tasks:
-  roles:
+    - name: test connection
+      ping:
+
+    - name: Add Ondrej Sury's apt key
+      become: yes
+      apt_key:
+        url: 'https://packages.sury.org/php/apt.gpg'
+        state: present
+
+    - name: Add repository for PHP 7.2
+      become: yes
+      apt_repository: repo='ppa:ondrej/php'
 
   tasks:
-    - name: ensure application directory is present
-      become: yes
-      file:
-        path: '{{ app_path }}'
-        owner: '{{ ansible_user }}'
-        group: '{{ ansible_user }}'
-        mode: 0750
-        state: directory
-
-    - name: clone gitconfog
-      git:
-        repo: "https://github.com/michondr/gitconfig"
-        dest: /home/{{ ansible_user }}/gitconfig
-        clone: yes
-        accept_hostkey: yes
-        update: yes
-      tags: gitconfig
-
-    - name: edit .gitconfig
-      lineinfile:
-        path: /home/{{ ansible_user}}/.gitconfig
-        create: yes
-        line: '{{ item }}'
-      with_items:
-        - '[include]'
-        - '     path = ~/gitconfig/gitconfig'
-      tags: gitconfig
-
-    - name:  download composer
-      command: php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-      tags: composer
-
-    - name:  install composer
-      command: php composer-setup.php
-      tags: composer
-
-    - name:  unlink composer
-      command: php -r "unlink('composer-setup.php');"
-      tags: composer
-
-    - name:  mv composer
-      command: mv composer.phar /usr/bin/composer
+    - name: install packages
       become: true
-      tags: composer
+      apt: name={{ item }}
+      with_items:
+        - php7.2
+        - php7.2-fpm
+        - nginx
+        - git
+        - htop
+
+    - name: install latest composer
+      become: yes
+      shell: "{{ item }}"
+      with_items:
+        - 'curl -sS https://getcomposer.org/installer -o ~/composer-setup.php'
+        - 'php ~/composer-setup.php --install-dir=/usr/bin --filename=composer'
+        - 'rm ~/composer-setup.php'
+
+    - name: add nginx config to /etc/nginx/sites-enabled/
+      become: true
+      template:
+        src: 'templates/time_table_tweak_nginx'
+        dest: '/etc/nginx/sites-enabled/time_table_tweak'
+
+    - name: add .env config to ~/
+      template:
+        src: 'templates/time_table_tweak_env'
+        dest: '/home/{{ ansible_user }}/'
 
   post_tasks:
+    - name: restarting services
+      become: true
+      service:
+        name: "{{ item }}"
+        state: restarted
+      with_items:
+        - nginx
+        - php7.2-fpm
+      tags: dev

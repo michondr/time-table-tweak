@@ -11,6 +11,11 @@
             padding: 2rem 0;
         }
 
+        .footer {
+            min-height: 50px;
+            padding: 25px;
+        }
+
     </style>
     {% block stylesheets %}{% endblock %}
 </head>
@@ -30,8 +35,12 @@
         {% block body_fluid %}{% endblock %}
     </div>
 
-    <div class="container-fluid">
-        <p class="float-right">If anything, you can always <a href="mailto:me@michondr.cz">contact</a> me</p>
+    <div class="container-fluid footer">
+        {% block footer %}{% endblock %}
+
+        <div class="fixed-bottom" style="margin-right: 25px">
+            <p class="float-right">If anything, you can always <a href="mailto:me@michondr.cz">contact</a> me</p>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

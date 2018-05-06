@@ -2,12 +2,8 @@
   gather_facts: no
 
   vars:
-    nginx_max_conns: 30
-    nginx_http_port: 80
-    nginx_client_max_body_size: 1M
-
-    app_path: /home/{{ ansible_user }}/my-project
-    app_http_port: 8090
+    project_folder: my-project
+    app_path: /home/{{ ansible_user }}/{{ project_folder }}
 
   remote_user: '{{ ansible_user }}'
 

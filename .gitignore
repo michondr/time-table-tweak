@@ -20,7 +20,4 @@
 /.web-server-pid
 ###< symfony/web-server-bundle ###
 
-###> trash  ###
 /.idea/
-/.build/deploy.retry
-###< trash  ###
