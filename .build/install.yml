@@ -79,7 +79,7 @@
     - name: add .env config to ~/
       template:
         src: 'templates/time_table_tweak_env'
-        dest: '/home/{{ ansible_user }}/'
+        dest: '/home/{{ ansible_user }}/.time_table_tweak_env'
 
   post_tasks:
     - name: restarting services
