@@ -14,7 +14,7 @@ building db structure:
 * `bin/console doctrine:migrations:diff`
 * `bin/console doctrine:migrations:migrate`
 
-## instalation via ansible
+## Installation via ansible
 You need ansible playbook installed on your machine
 * edit ansible hosts `vi /etc/ansible/hosts` and add row like this `time_table_tweek ansible_host=111.111.111.111 ansible_private_key_file=~/.ssh/id_rsa ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3`
 * in your project run `ansible-playbook .build/install.yml`
