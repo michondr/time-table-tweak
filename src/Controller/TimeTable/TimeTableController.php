@@ -47,7 +47,7 @@ class TimeTableController extends Controller
                 );
             }
 
-            $timetables = $this->timeTableBuilder->getTimeTablesMulti($setupForm->getData());
+            $timetables = $this->timeTableBuilder->getTimeTablesMulti($setupForm->getData()['subjects']);
 
             return $this->render(
                 '@Controller/TimeTable/timeTableResult.twig',

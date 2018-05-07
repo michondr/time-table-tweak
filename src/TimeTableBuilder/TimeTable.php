@@ -5,6 +5,7 @@ namespace App\TimeTableBuilder;
 use App\DateTime\Time\Time;
 use App\DateTime\Time\TimeInterval;
 use App\Entity\TimeTableItem\TimeTableItem;
+use App\TimeTableBuilder\Cell\Cell;
 
 class TimeTable
 {
@@ -13,7 +14,7 @@ class TimeTable
 
     /** @var array[] $timeTableSchema */
     public $timeTableSchema = [];
-    /** @var TimeTableItem $lastAddedItem */
+    /** @var Cell $lastAddedItem */
     public $lastAddedItem = null;
 
     public function __construct()
@@ -25,6 +26,9 @@ class TimeTable
         }
     }
 
+    /**
+     * @return TimeInterval[]
+     */
     public static function getTimeIntervals()
     {
         return [
@@ -77,18 +81,18 @@ class TimeTable
         throw new \Exception('I dont have this end time: '.$time->toMySql());
     }
 
-    public function addItemToSchema(TimeTableItem $item)
+    public function addCellToSchema(Cell $cell)
     {
-        foreach ($item->getTimeTableOccupiedIds() as $id) {
+        foreach ($cell->getOccupiedIds() as $id) {
 
             /** @var TimeTableItem $elementOnLocation */
-            $elementOnLocation = $this->timeTableSchema[$item->getDay()][$id];
+            $elementOnLocation = $this->timeTableSchema[$cell->getDay()][$id];
             if ($elementOnLocation !== self::EMPTY) {
-                throw new SchemaLocationOccupiedException($item);
+                throw new SchemaLocationOccupiedException($cell);
             }
 
-            $this->timeTableSchema[$item->getDay()][$id] = $item;
-            $this->lastAddedItem = $item;
+            $this->timeTableSchema[$cell->getDay()][$id] = $cell;
+            $this->lastAddedItem = $cell;
         }
     }
 
@@ -97,7 +101,7 @@ class TimeTable
         $subjects = [];
 
         foreach ($this->timeTableSchema as $day) {
-            /** @var TimeTableItem $item */
+            /** @var Cell $item */
             foreach (array_filter($day) as $item) {
                 $subjects[] = $returnIndents ? $item->getSubject()->getIndent() : $item->getSubject();
             }
@@ -106,7 +110,7 @@ class TimeTable
         return array_unique($subjects);
     }
 
-    public function getLastAddedItem(): ?TimeTableItem
+    public function getLastAddedItem(): ?Cell
     {
         return $this->lastAddedItem;
     }
@@ -133,7 +137,6 @@ class TimeTable
 
         foreach ($this->timeTableSchema as $day) {
             $ids = array_keys(array_filter($day));
-
             if (empty($ids)) {
                 $freeDays++;
                 continue;
