@@ -4,8 +4,8 @@ namespace App\Controller\TimeTable;
 
 use App\Controller\Flash;
 use App\Entity\Subject\SubjectFacade;
-use App\TimeTableBuilder\TimeTable;
 use App\TimeTableBuilder\TimeTableBuilder;
+use App\TimeTableBuilder\TimeTableFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,13 +48,14 @@ class TimeTableController extends Controller
             }
 
             $timetables = $this->timeTableBuilder->getTimeTablesMulti($setupForm->getData()['subjects']);
+            $filtered = TimeTableFilter::removeDays($timetables);
 
             return $this->render(
                 '@Controller/TimeTable/timeTableResult.twig',
                 [
-                    'time_tables' => $timetables,
+                    'time_tables' => $filtered['timetables'],
                     'form_subjects' => $setupForm->getData()['subjects'],
-                    'time_intervals' => TimeTable::getTimeIntervals(),
+                    'time_intervals' => $filtered['intervals'],
                 ]
             );
         }

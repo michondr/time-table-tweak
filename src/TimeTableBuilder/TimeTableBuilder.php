@@ -10,6 +10,7 @@ use App\TimeTableBuilder\Cell\CellList;
 class TimeTableBuilder
 {
     const MAX_RETURN_SIZE = 10;
+    const MAX_SUB_SIZE = 10;
 
     private $timeTableItemFacade;
 
@@ -22,17 +23,14 @@ class TimeTableBuilder
     public function getTimeTablesMulti(array $subjects)
     {
         $items = [];
-//        foreach (range(1, count($subjects)) as $index) {
-//            array_push($subjects, array_shift($subjects));
-//        }
-        $items = array_merge($items, $this->getTimeTables($subjects));
+        foreach (range(1, count($subjects)) as $index) {
+            array_push($subjects, array_shift($subjects));
+            $items = array_merge($items, $this->getTimeTables($subjects));
+        }
 
         $items = array_unique($items);
         $items = $this->sort($items);
         $items = array_slice($items, 0, self::MAX_RETURN_SIZE);
-//        dump($items);
-//        dump($this->hydrateCells($items));
-//        die;
 
         return $this->hydrateCells($items);
     }
@@ -47,16 +45,6 @@ class TimeTableBuilder
         foreach ($subjects as $subject) {
             $lectureList = $cellList->getSortedCellList($subject, TimeTableItem::ACTION_LECTURE);
 
-//            /** @var Cell $cell */
-//            foreach ($lectureList->getCells() as $cell){
-//                dump($cell);
-//                dump($cell->getOccupiedIds());
-//            }
-//            continue;
-//            dump($lectureCells);
-//            continue;
-
-//            $lectures = $this->timeTableItemFacade->getBySubjects([$subject], true);
             $lecturesAdded = 0;
             /** @var TreeNode $leaf */
             foreach ($root->getLeaves() as $leaf) {
@@ -74,7 +62,6 @@ class TimeTableBuilder
             }
 
             $seminarList = $cellList->getSortedCellList($subject, TimeTableItem::ACTION_SEMINAR);
-//            $seminars = $this->timeTableItemFacade->getBySubjects([$subject], false);
             $seminarsAdded = 0;
             /** @var TreeNode $leaf */
             foreach ($root->getLeaves() as $leaf) {
@@ -105,7 +92,7 @@ class TimeTableBuilder
         $items = $root->getItemsOnHighestLeaves();
         $items = $this->sort($items);
 
-        return array_slice($items, 0, 5);
+        return array_slice($items, 0, self::MAX_SUB_SIZE);
     }
 
     private function addItemToTimeTable(?TimeTable $timeTable, Cell $cell)
@@ -148,14 +135,9 @@ class TimeTableBuilder
     {
         /** @var TimeTable $timeTable */
         foreach ($timeTables as $tableKey => $timeTable) {
-//            dump('#### NEW TIME TABLE');
             foreach ($timeTable->timeTableSchema as $dayKey => $daySchema) {
-//                dump('new DAY');
-                foreach ($daySchema as $cellKey => $cell) {
-                    if (is_null($cell)) {
-                        continue;
-                    }
-                    $timeTables[$tableKey]->timeTableSchema[$dayKey][$cellKey] = [$this->timeTableItemFacade->getByCellData($cell)];
+                foreach (array_filter($daySchema) as $cellKey => $cell) {
+                    $timeTables[$tableKey]->timeTableSchema[$dayKey][$cellKey] = $this->timeTableItemFacade->getByCellData($cell);
                 }
             }
         }

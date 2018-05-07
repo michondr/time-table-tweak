@@ -32,7 +32,7 @@ class CellList
 
         /** @var Cell $cell */
         foreach ($this->cells as $cell) {
-            if ($cell->getSubject()->getIndent() === $subject->getIndent() and $cell->getActionType() === $actionType) {
+            if ($cell->getSubject() === $subject and $cell->getActionType() === $actionType) {
                 $validCells[] = $cell;
             }
         }

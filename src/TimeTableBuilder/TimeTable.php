@@ -96,14 +96,22 @@ class TimeTable
         }
     }
 
-    public function getSubjects(bool $returnIndents = false)
+    public function getSubjects($returnIndents = false)
     {
         $subjects = [];
 
-        foreach ($this->timeTableSchema as $day) {
+        foreach ($this->timeTableSchema as $daySchema) {
             /** @var Cell $item */
-            foreach (array_filter($day) as $item) {
-                $subjects[] = $returnIndents ? $item->getSubject()->getIndent() : $item->getSubject();
+            foreach (array_filter($daySchema) as $item) {
+                if (is_array($item)) {
+                    /** @var TimeTableItem $tableItem */
+                    foreach ($item as $tableItem) {
+                        $subjects[] = $returnIndents ? $tableItem->getSubject()->getIndent() : $tableItem->getSubject();
+                    }
+
+                } else {
+                    $subjects[] = $returnIndents ? $item->getSubject()->getIndent() : $item->getSubject();
+                }
             }
         }
 
@@ -158,5 +166,18 @@ class TimeTable
     public function isDayEmpty(int $day)
     {
         return empty(array_filter($this->timeTableSchema[$day]));
+    }
+
+    public function areLateHoursEmpty()
+    {
+        $empty = true;
+
+        foreach ($this->timeTableSchema as $daySchema){
+            if($daySchema[15] !== self::EMPTY or $daySchema[16] !== self::EMPTY){
+                $empty = true;
+            }
+        }
+
+        return $empty;
     }
 }

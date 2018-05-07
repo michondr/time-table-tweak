@@ -89,6 +89,7 @@ class TimeTableItemFacade
         $items = $this->repository->findBy(
             [
                 'subject' => $cell->getSubject(),
+                'actionType' => $cell->getActionType(),
                 'day' => $cell->getDay(),
                 'timeFrom' => TimeTable::getTimeIntervals()[$cell->getIdFrom()]->getFrom(),
                 'timeTo' => TimeTable::getTimeIntervals()[$cell->getIdTo()]->getTo(),
