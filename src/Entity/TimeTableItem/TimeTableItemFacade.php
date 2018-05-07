@@ -4,7 +4,7 @@ namespace App\Entity\TimeTableItem;
 
 use App\Entity\Subject\Subject;
 use App\TimeTableBuilder\Cell\Cell;
-use App\TimeTableBuilder\TimeTable;
+use App\TimeTableBuilder\Table\TimeTableInterval;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TimeTableItemFacade
@@ -91,8 +91,8 @@ class TimeTableItemFacade
                 'subject' => $cell->getSubject(),
                 'actionType' => $cell->getActionType(),
                 'day' => $cell->getDay(),
-                'timeFrom' => TimeTable::getTimeIntervals()[$cell->getIdFrom()]->getFrom(),
-                'timeTo' => TimeTable::getTimeIntervals()[$cell->getIdTo()]->getTo(),
+                'timeFrom' => TimeTableInterval::getIntervals()[$cell->getIdFrom()]->getFrom(),
+                'timeTo' => TimeTableInterval::getIntervals()[$cell->getIdTo()]->getTo(),
             ]
         );
 

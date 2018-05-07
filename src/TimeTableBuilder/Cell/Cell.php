@@ -4,9 +4,9 @@ namespace App\TimeTableBuilder\Cell;
 
 use App\Entity\Subject\Subject;
 use App\Entity\TimeTableItem\TimeTableItem;
-use App\TimeTableBuilder\TimeTable;
+use App\TimeTableBuilder\Table\TimeTableInterval;
 
-class Cell
+class Cell implements \JsonSerializable
 {
     private $subject;
     private $actionType;
@@ -20,8 +20,8 @@ class Cell
         $this->subject = $timeTableItem->getSubject();
         $this->actionType = $timeTableItem->getActionType();
         $this->day = $timeTableItem->getDay();
-        $this->idFrom = TimeTable::getIntervalIdByStartTime($timeTableItem->getTimeFrom());
-        $this->idTo = TimeTable::getIntervalIdByEndTime($timeTableItem->getTimeTo());
+        $this->idFrom = TimeTableInterval::getIntervalIdByStartTime($timeTableItem->getTimeFrom());
+        $this->idTo = TimeTableInterval::getIntervalIdByEndTime($timeTableItem->getTimeTo());
     }
 
     public function getHash()
@@ -29,7 +29,7 @@ class Cell
         return md5($this->subject->getIndent().$this->day.$this->actionType.$this->idFrom.$this->idTo);;
     }
 
-    public function __toString()
+    public function jsonSerialize()
     {
         return json_encode(
             [
@@ -45,7 +45,7 @@ class Cell
     {
         $ids = [];
 
-        for ($i = $this->idFrom; $i<=$this->idTo; $i++){
+        for ($i = $this->idFrom; $i <= $this->idTo; $i++) {
             $ids[] = $i;
         }
 

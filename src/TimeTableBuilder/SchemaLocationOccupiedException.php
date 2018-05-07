@@ -3,6 +3,7 @@
 namespace App\TimeTableBuilder;
 
 use App\TimeTableBuilder\Cell\Cell;
+use App\TimeTableBuilder\Table\TimeTableInterval;
 
 class SchemaLocationOccupiedException extends \Exception
 {
@@ -20,8 +21,8 @@ class SchemaLocationOccupiedException extends \Exception
             $this->item->getSubject()->getIndent().
             ' ('.$this->item->getActionType().')'.
             ' on '.$this->item->getDay().
-            ' from '.TimeTable::getTimeIntervals()[$this->item->getIdFrom()]->getFrom()->toMySql().
-            ' to '.TimeTable::getTimeIntervals()[$this->item->getIdTo()]->getTo()->toMySql().
+            ' from '.TimeTableInterval::getIntervals()[$this->item->getIdFrom()]->getFrom()->toMySql().
+            ' to '.TimeTableInterval::getIntervals()[$this->item->getIdTo()]->getTo()->toMySql().
             ' is full';
     }
 }

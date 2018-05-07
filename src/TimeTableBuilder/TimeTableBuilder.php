@@ -6,6 +6,7 @@ use App\Entity\TimeTableItem\TimeTableItem;
 use App\Entity\TimeTableItem\TimeTableItemFacade;
 use App\TimeTableBuilder\Cell\Cell;
 use App\TimeTableBuilder\Cell\CellList;
+use App\TimeTableBuilder\Tree\TreeNode;
 
 class TimeTableBuilder
 {
@@ -43,6 +44,7 @@ class TimeTableBuilder
         $root = TreeNode::create(new TimeTable());
 
         foreach ($subjects as $subject) {
+            $root = $this->getNewRoot($root);
             $lectureList = $cellList->getSortedCellList($subject, TimeTableItem::ACTION_LECTURE);
 
             $lecturesAdded = 0;
@@ -60,7 +62,6 @@ class TimeTableBuilder
             if (!$lecturesAddedCorrectly) {
                 continue;
             }
-
             $seminarList = $cellList->getSortedCellList($subject, TimeTableItem::ACTION_SEMINAR);
             $seminarsAdded = 0;
             /** @var TreeNode $leaf */
@@ -143,5 +144,21 @@ class TimeTableBuilder
         }
 
         return $timeTables;
+    }
+
+    private function getNewRoot(TreeNode $root)
+    {
+        $highestItems = $root->getItemsOnHighestLeaves();
+        $highestItems = array_unique($highestItems);
+        $highestItems = $this->sort($highestItems);
+        $highestItems = array_slice($highestItems, 0, 50);
+
+        $newRoot = TreeNode::create(new TimeTable());
+        /** @var TimeTable $node */
+        foreach ($highestItems as $item) {
+            TreeNode::create($item, $newRoot);
+        }
+
+        return $newRoot;
     }
 }

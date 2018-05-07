@@ -64,11 +64,21 @@ class DevCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         tstart('full');
-        $indents = ['4IZ238', '4IZ278', '4ST201', '4IT101', '4EK112', '5EN101', '2AJ112'];
-        $subjects = $this->subjectFacade->getByIndents($indents);
-        $tables = $this->timeTableBuilder->getTimeTablesMulti($subjects);
+        $indents = [];
+        $indents[] = '4IZ238';
+        $indents[] = '4IZ278';
+        $indents[] = '4ST201';
+        $indents[] = '4IT101';
+        $indents[] = '4EK112';
+        $indents[] = '5EN101';
+        $indents[] = '2AJ112';
 
-            dump(count($tables));
+        dump($indents);
+        $subjects = $this->subjectFacade->getByIndents($indents);
+        dump(count($subjects));
+        $tables = $this->timeTableBuilder->getTimeTablesMulti($subjects);
+        dump(count($tables));
+
         /** @var TimeTable $table */
         foreach ($tables as $table){
             dump($table->calculateIndex());

@@ -7,7 +7,7 @@ use App\Entity\EntityFieldManager;
 use App\Entity\Location\Location;
 use App\Entity\Subject\Subject;
 use App\Entity\Teacher\Teacher;
-use App\TimeTableBuilder\TimeTable;
+use App\TimeTableBuilder\Table\TimeTableInterval;
 use Doctrine\ORM\Mapping as ORM;
 
 /** @ORM\Entity() */
@@ -199,8 +199,8 @@ class TimeTableItem extends EntityFieldManager implements \JsonSerializable
 
     public function getTimeTableOccupiedIds()
     {
-        $startingId = TimeTable::getIntervalIdByStartTime($this->getTimeFrom());
-        $endingId = TimeTable::getIntervalIdByEndTime($this->getTimeTo());
+        $startingId = TimeTableInterval::getIntervalIdByStartTime($this->getTimeFrom());
+        $endingId = TimeTableInterval::getIntervalIdByEndTime($this->getTimeTo());
         $ids = [];
 
         while ($startingId <= $endingId) {

@@ -4,8 +4,8 @@ namespace App\Controller\TimeTable;
 
 use App\Controller\Flash;
 use App\Entity\Subject\SubjectFacade;
+use App\TimeTableBuilder\Table\TimeTableFilter;
 use App\TimeTableBuilder\TimeTableBuilder;
-use App\TimeTableBuilder\TimeTableFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;

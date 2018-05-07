@@ -1,6 +1,8 @@
 <?php
 
-namespace App\TimeTableBuilder;
+namespace App\TimeTableBuilder\Tree;
+
+use App\TimeTableBuilder\TimeTable;
 
 class TreeNode
 {

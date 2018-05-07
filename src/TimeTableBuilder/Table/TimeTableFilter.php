@@ -1,12 +1,14 @@
 <?php
 
-namespace App\TimeTableBuilder;
+namespace App\TimeTableBuilder\Table;
+
+use App\TimeTableBuilder\TimeTable;
 
 class TimeTableFilter
 {
     public static function removeDays(array $timetables)
     {
-        $intervals = TimeTable::getTimeIntervals();
+        $intervals = TimeTableInterval::getIntervals();
         $emptyLateHours = true;
 
         /** @var TimeTable $timetable */
