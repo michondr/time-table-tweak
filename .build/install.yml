@@ -58,6 +58,10 @@
       with_items:
         - php7.2
         - php7.2-fpm
+        - php7.2-curl
+        - php7.2-xml
+        - php7.2-zip
+        - php7.2-mysql
         - nginx
         - git
         - htop
@@ -81,6 +85,15 @@
         src: 'templates/time_table_tweak_env'
         dest: '/home/{{ ansible_user }}/.time_table_tweak_env'
 
+    - name: fix locale
+      lineinfile:
+        path: /home/{{ ansible_user }}/.bashrc
+        line: "{{ item }}"
+      with_items:
+        - export LC_ALL=en_US.UTF-8
+        - export LANG=en_US.UTF-8
+        - export LANGUAGE=en_US.UTF-8
+
   post_tasks:
     - name: restarting services
       become: true
@@ -90,4 +103,3 @@
       with_items:
         - nginx
         - php7.2-fpm
-      tags: dev

@@ -31,4 +31,11 @@
     - name: clear cache
       shell: php {{ app_path }}/bin/console cache:clear
 
+    - name: fix directory permissions
+      file:
+        path: "{{ app_path }}/var"
+        state: directory
+        mode: 0777
+        recurse: yes
+
   post_tasks:
