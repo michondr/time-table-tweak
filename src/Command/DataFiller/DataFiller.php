@@ -105,8 +105,11 @@ class DataFiller
         return TimeTableItem::ACTION_OTHER;
     }
 
-    private function resolveBuilding(string $str)
+    private function resolveBuilding(?string $str)
     {
+        if(is_null($str)){
+            return "";
+        }
         $data = explode(' ', $str);
         $building = $data[2];
 
@@ -116,8 +119,11 @@ class DataFiller
         return $building;
     }
 
-    private function resolveRoom(string $str)
+    private function resolveRoom(?string $str)
     {
+        if(is_null($str)){
+            return "";
+        }
         $data = explode(' ', $str);
 
         return $data[3];

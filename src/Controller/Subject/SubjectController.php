@@ -5,6 +5,7 @@ namespace App\Controller\Subject;
 use App\Entity\Subject\SubjectFacade;
 use App\Entity\TimeTableItem\TimeTableItem;
 use App\Entity\TimeTableItem\TimeTableItemFacade;
+use App\TimeTableBuilder\Table\TimeTableFilter;
 use App\TimeTableBuilder\TimeTable;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,14 +40,18 @@ class SubjectController extends Controller
             $lectures = $this->timeTableItemFacade->getBySubjects([$subject], true);
             $seminars = $this->timeTableItemFacade->getBySubjects([$subject], false);
             $timeTables = [$this->createTimeTable($lectures), $this->createTimeTable($seminars)];
+            $indent = $subject->getName();
         }
+
+        $filtered = TimeTableFilter::removeDays($timeTables);
 
         return $this->render(
             '@Controller/Subject/subjects.html.twig',
             [
+                'indent' => $indent,
                 'subjects' => $subjects,
-                'time_tables' => $timeTables,
-                'time_intervals' => TimeTable::getTimeIntervals(),
+                'time_tables' => $filtered['timetables'],
+                'time_intervals' => $filtered['intervals'],
             ]
         );
     }

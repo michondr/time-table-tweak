@@ -4,11 +4,14 @@ namespace App\TimeTableBuilder;
 
 use App\Entity\TimeTableItem\TimeTableItem;
 use App\Entity\TimeTableItem\TimeTableItemFacade;
+use App\TimeTableBuilder\Cell\Cell;
+use App\TimeTableBuilder\Cell\CellList;
+use App\TimeTableBuilder\Tree\TreeNode;
 
 class TimeTableBuilder
 {
-    const ALLOWED_PROCESSING_SECONDS = 10;
-    const MAX_RETURN_SIZE = 50;
+    const MAX_RETURN_SIZE = 10;
+    const MAX_SUB_SIZE = 10;
 
     private $timeTableItemFacade;
 
@@ -18,56 +21,52 @@ class TimeTableBuilder
         $this->timeTableItemFacade = $timeTableItemFacade;
     }
 
-    public function getTimeTablesMulti(array $formData)
+    public function getTimeTablesMulti(array $subjects)
     {
-        // no clue why, but micro time gives me seconds
-        $startTime = microtime(true);
-
-        $subjects = $formData['subjects'];
         $items = [];
         foreach (range(1, count($subjects)) as $index) {
             array_push($subjects, array_shift($subjects));
-
-            $nowTime = microtime(true);
-            if (($nowTime - $startTime) < self::ALLOWED_PROCESSING_SECONDS) {
-                $items = array_merge($items, $this->getTimeTables($subjects));
-            }
+            $items = array_merge($items, $this->getTimeTables($subjects));
         }
 
         $items = array_unique($items);
         $items = $this->sort($items);
+        $items = array_slice($items, 0, self::MAX_RETURN_SIZE);
 
-        return array_slice($items, 0, self::MAX_RETURN_SIZE);
+        return $this->hydrateCells($items);
     }
 
     public function getTimeTables(array $subjects)
     {
+        $timeTableItems = $this->timeTableItemFacade->getBySubjects($subjects);
+        $cellList = CellList::constructFromTimeTableItems($timeTableItems);
+
         $root = TreeNode::create(new TimeTable());
 
         foreach ($subjects as $subject) {
+            $root = $this->getNewRoot($root);
+            $lectureList = $cellList->getSortedCellList($subject, TimeTableItem::ACTION_LECTURE);
 
-            $lectures = $this->timeTableItemFacade->getBySubjects([$subject], true);
             $lecturesAdded = 0;
             /** @var TreeNode $leaf */
             foreach ($root->getLeaves() as $leaf) {
-                foreach ($lectures as $lecture) {
-                    $child = $this->addItemToTimeTable($leaf->getItem(), $lecture);
+                foreach ($lectureList->getCells() as $cell) {
+                    $child = $this->addItemToTimeTable($leaf->getItem(), $cell);
                     if (!is_null($child)) {
                         TreeNode::create($child, $leaf);
                         $lecturesAdded++;
                     }
                 }
             }
-            $lecturesAddedCorrectly = (empty($lectures) or $lecturesAdded > 0);
+            $lecturesAddedCorrectly = ($lectureList->isEmpty() or $lecturesAdded > 0);
             if (!$lecturesAddedCorrectly) {
                 continue;
             }
-
-            $seminars = $this->timeTableItemFacade->getBySubjects([$subject], false);
+            $seminarList = $cellList->getSortedCellList($subject, TimeTableItem::ACTION_SEMINAR);
             $seminarsAdded = 0;
             /** @var TreeNode $leaf */
             foreach ($root->getLeaves() as $leaf) {
-                foreach ($seminars as $seminar) {
+                foreach ($seminarList->getCells() as $seminar) {
                     $child = $this->addItemToTimeTable($leaf->getItem(), $seminar);
                     if (!is_null($child)) {
                         TreeNode::create($child, $leaf);
@@ -76,7 +75,7 @@ class TimeTableBuilder
                 }
             }
 
-            $seminarsAddedCorrectly = (empty($seminars) or $seminarsAdded > 0);
+            $seminarsAddedCorrectly = ($seminarList->isEmpty() or $seminarsAdded > 0);
             if (!$seminarsAddedCorrectly) {
                 foreach ($root->getLeaves() as $leaf) {
 
@@ -84,7 +83,7 @@ class TimeTableBuilder
                     $item = $leaf->getItem();
                     $lastItem = $item->getLastAddedItem();
 
-                    if (!is_null($lastItem) and $lastItem->getSubject() == $subject and $lastItem->getActionType() == 'lecture') {
+                    if (!is_null($lastItem) and $lastItem->getSubject() == $subject and $lastItem->getActionType() == TimeTableItem::ACTION_LECTURE) {
                         $root->removeLeaf($leaf);
                     }
                 }
@@ -94,14 +93,14 @@ class TimeTableBuilder
         $items = $root->getItemsOnHighestLeaves();
         $items = $this->sort($items);
 
-        return array_slice($items, 0, 15);
+        return array_slice($items, 0, self::MAX_SUB_SIZE);
     }
 
-    private function addItemToTimeTable(?TimeTable $timeTable, TimeTableItem $item)
+    private function addItemToTimeTable(?TimeTable $timeTable, Cell $cell)
     {
         $timeTableClone = clone $timeTable;
         try {
-            $timeTableClone->addItemToSchema($item);
+            $timeTableClone->addCellToSchema($cell);
 
             return $timeTableClone;
         } catch (SchemaLocationOccupiedException $e) {
@@ -131,5 +130,35 @@ class TimeTableBuilder
         }
 
         return $items;
+    }
+
+    private function hydrateCells(array $timeTables)
+    {
+        /** @var TimeTable $timeTable */
+        foreach ($timeTables as $tableKey => $timeTable) {
+            foreach ($timeTable->timeTableSchema as $dayKey => $daySchema) {
+                foreach (array_filter($daySchema) as $cellKey => $cell) {
+                    $timeTables[$tableKey]->timeTableSchema[$dayKey][$cellKey] = $this->timeTableItemFacade->getByCellData($cell);
+                }
+            }
+        }
+
+        return $timeTables;
+    }
+
+    private function getNewRoot(TreeNode $root)
+    {
+        $highestItems = $root->getItemsOnHighestLeaves();
+        $highestItems = array_unique($highestItems);
+        $highestItems = $this->sort($highestItems);
+        $highestItems = array_slice($highestItems, 0, 50);
+
+        $newRoot = TreeNode::create(new TimeTable());
+        /** @var TimeTable $node */
+        foreach ($highestItems as $item) {
+            TreeNode::create($item, $newRoot);
+        }
+
+        return $newRoot;
     }
 }

@@ -1,6 +1,15 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <style>
+        .timetableTable {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
 {% block title %}Subjects{% endblock %}
+{% block h1 %}Subjects <small>{{ indent }}</small>{% endblock %}
 
 {% block body %}
     {% for subject in subjects %}
@@ -29,15 +38,15 @@
                 {% if not shouldHideDay %}
                     <tr>
                         {% for interval in day %}
-                            {% if interval|first != '' and not interval|first.hasEmptyFields() %}
-                                <td class="{% if interval|first.actionType == 'lecture' %}text-info{% else %}text-warning{% endif %}">
+                            {% set lead = interval|first %}
+                            {% if lead != '' and not lead.hasEmptyFields() %}
+                                <td class="{% if lead.actionType == 'lecture' %}text-info{% else %}text-warning{% endif %}">
                                     {% for subject in interval %}
                                         {% if not loop.first %}
                                             <hr>
                                         {% endif %}
-                                        {{ subject.subject.indent }}<br/>
-                                        {{ subject.location.location }}<br/>
-                                        {{ subject.teacher.name }}<br/>
+                                            {{ subject.location.location }}<br/>
+                                            {{ subject.teacher.name }}<br/>
                                     {% endfor %}
                                 </td>
                             {% else %}

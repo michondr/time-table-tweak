@@ -8,8 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DevController extends Controller
 {
-    private $tableItemFacade;
-
     public function __construct(
         TimeTableItemFacade $tableItemFacade
     ) {
@@ -21,8 +19,8 @@ class DevController extends Controller
      */
     public function dev()
     {
-
         throw new \Exception('broken here', 205);
+
         return $this->render(
             '@Controller/Dev/dev.html.twig',
             [

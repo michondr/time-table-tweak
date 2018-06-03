@@ -53,4 +53,9 @@ class SubjectFacade
     {
         return $this->repository->find($indent);
     }
+
+    public function getByIndents(array $indents)
+    {
+        return $this->repository->findBy(['indent' => $indents]);
+    }
 }

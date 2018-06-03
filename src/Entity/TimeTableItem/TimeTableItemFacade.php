@@ -3,6 +3,8 @@
 namespace App\Entity\TimeTableItem;
 
 use App\Entity\Subject\Subject;
+use App\TimeTableBuilder\Cell\Cell;
+use App\TimeTableBuilder\Table\TimeTableInterval;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TimeTableItemFacade
@@ -15,6 +17,11 @@ class TimeTableItemFacade
     ) {
         $this->entityManager = $entityManager;
         $this->repository = $entityManager->getRepository(TimeTableItem::class);
+    }
+
+    public function getById(int $id)
+    {
+        return $this->repository->find($id);
     }
 
     public function insert(TimeTableItem $entity)
@@ -77,8 +84,24 @@ class TimeTableItemFacade
         return $items;
     }
 
-    public function getById(int $id)
+    public function getByCellData(Cell $cell)
     {
-        return $this->repository->find($id);
+        $items = $this->repository->findBy(
+            [
+                'subject' => $cell->getSubject(),
+                'actionType' => $cell->getActionType(),
+                'day' => $cell->getDay(),
+                'timeFrom' => TimeTableInterval::getIntervals()[$cell->getIdFrom()]->getFrom(),
+                'timeTo' => TimeTableInterval::getIntervals()[$cell->getIdTo()]->getTo(),
+            ]
+        );
+
+        foreach ($items as $key => $item) {
+            if ($item->hasEmptyFields()) {
+                unset($items[$key]);
+            }
+        }
+
+        return $items;
     }
 }
