@@ -25,17 +25,22 @@
     - name: set .env to project
       shell: cp /home/{{ ansible_user }}/.time_table_tweak_env {{ app_path }}/.env
 
+    - name: delete composer folder
+      file:
+        path: /home/{{ ansible_user }}/.composer
+        state: absent
+      become: yes
+
     - name: run composer install
       shell: composer install --working-dir {{ app_path }}
 
-    - name: clear cache
-      shell: php {{ app_path }}/bin/console cache:clear
-
-    - name: fix directory permissions
+    - name: managed folders has 777 chmod.
       file:
-        path: "{{ app_path }}/var"
-        state: directory
+        path: "{{ app_path }}/{{ item }}"
         mode: 0777
-        recurse: yes
+        recurse: true
+      with_items:
+        - var/cache
+        - var/log
 
   post_tasks:
