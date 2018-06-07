@@ -19,7 +19,7 @@ class DevController extends Controller
      */
     public function dev()
     {
-        throw new \Exception('broken here', 205);
+//        throw new \Exception('broken here', 205);
 
         return $this->render(
             '@Controller/Dev/dev.html.twig',
