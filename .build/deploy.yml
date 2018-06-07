@@ -2,7 +2,7 @@
   gather_facts: no
 
   vars:
-    project_folder: my-project
+    project_folder: time-table-tweak
     app_path: /home/{{ ansible_user }}/{{ project_folder }}
 
   remote_user: '{{ ansible_user }}'
@@ -14,7 +14,7 @@
   tasks:
     - name: checkout app from git repo
       git:
-        repo: "https://github.com/michondr/my-project"
+        repo: "https://github.com/michondr/time-table-tweak.git"
         dest: '{{ app_path }}'
         clone: yes
         force: yes

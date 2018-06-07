@@ -2,7 +2,7 @@
   gather_facts: no
 
   vars:
-    project_folder: my-project
+    project_folder: time-table-tweak
     app_path: /home/{{ ansible_user }}/{{ project_folder }}
     nxinx_host: time-table-tweak
 
