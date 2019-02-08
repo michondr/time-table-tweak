@@ -1,0 +1,1 @@
+time_table_tweak ansible_host=18.197.192.230 ansible_private_key_file=~/.ssh/me.pem ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
