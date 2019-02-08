@@ -1,0 +1,31 @@
+- hosts: rosti
+  gather_facts: no
+
+  vars:
+    project_folder: time-table-tweak
+    app_path: /srv/{{ project_folder }}/
+    nxinx_host: time-table-tweak
+
+  remote_user: '{{ ansible_user }}'
+
+  pre_tasks:
+    - name: test connection
+      ping:
+
+  tasks:
+    - name: add nginx config to /srv/conf/nginx.d/
+      template:
+        src: 'templates/time_table_tweak_nginx'
+        dest: '/srv/conf/nginx.d/time_table_tweak'
+
+    - name: add .env config to ~/
+      template:
+        src: 'templates/time_table_tweak_env'
+        dest: '/srv/.env_time_table_tweak'
+
+  post_tasks:
+    - name: restarting services
+      shell: supervisorctl restart "{{ item }}"
+      with_items:
+        - nginx
+        - php7.2-fpm

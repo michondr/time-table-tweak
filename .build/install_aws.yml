@@ -1,4 +1,4 @@
-- hosts: time_table_tweak
+- hosts: aws
   gather_facts: no
 
   vars:

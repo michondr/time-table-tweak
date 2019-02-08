@@ -1,5 +1,5 @@
 ###> symfony/framework-bundle ###
-APP_ENV={{ symfony_env }}
+APP_ENV=prod
 APP_SECRET=de561062ba5994a2ecb5591925b02d46
 ###< symfony/framework-bundle ###
 
@@ -8,9 +8,9 @@ MAILER_URL=null://localhost
 ###< symfony/swiftmailer-bundle ###
 
 ###> doctrine/doctrine-bundle ###
-DATABASE_URL=mysql://{{ db_user }}:{{ db_pass }}@{{ db_host }}:{{ db_port }}/{{ db_name }}
+DATABASE_URL=mysql://michondr:Uh0cw5Md@michondr-rds.cdpbw9rz2dyn.eu-central-1.rds.amazonaws.com:3306/time_table_tweak
 ###< doctrine/doctrine-bundle ###
 
 ###> sentry/sentry-symfony ###
-SENTRY_DSN={{ sentry_dns }}
+SENTRY_DSN=https://f1228f06faee4b5a8c7ea7cb3c965be9:21f82bc3901941938096cb1ac9c37e26@sentry.io/1198135
 ###< sentry/sentry-symfony ###
