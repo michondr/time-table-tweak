@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Subjects item{% endblock %}
+{% block h1 %}Ez insis timetable item{% endblock %}
+
+{% block body %}
+    <div class="">
+        {{ form(form) }}
+    </div>
+{% endblock %}
+
+{% block body_fluid %}
+    <div class="p-3">
+        {% if data['downloaded'] is defined %}
+            <h2 class="p-2">Result data
+                <small>(downloaded {{ data['downloaded'] }})</small>
+            </h2>
+        {% endif %}
+
+        {% if data['filter'] is defined %}
+            <div class="row pt-2">
+                <h4>filter</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dataKey, dataItem in data['filter'] %}
+                        <tr>
+                            <td>{{ dataKey }}</td>
+                            <td>{{ dataItem }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if data['timetable'] is defined %}
+            <div class="row pt-2">
+                <h4>data filtered for timetable</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>study_period</th>
+                        <th>department</th>
+                        <th>study_form</th>
+                        <th>beginning</th>
+                        <th>end</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if data['timetable'] is not empty %}
+                        <tr>
+                            <td>{{ data['timetable']['name'] }}</td>
+                            <td>{{ data['timetable']['study_period'] }}</td>
+                            <td>{{ data['timetable']['department'] }}</td>
+                            <td>{{ data['timetable']['study_form'] }}</td>
+                            <td>{{ data['timetable']['beginning'] }}</td>
+                            <td>{{ data['timetable']['end'] }}</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if data['validity'] is defined %}
+            <div class="row pt-2">
+                <h4>Validity</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>valid from</th>
+                        <th>valid to</th>
+                        <th>last change</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if data['validity'] is not empty %}
+                        <tr>
+                            <td>{{ data['validity']['from'] }}</td>
+                            <td>{{ data['validity']['until'] }}</td>
+                            <td>{{ data['last_change'] ?? '' }}</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if data['data'] is defined %}
+            <div class="row pt-2">
+                <h4>results</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>day</th>
+                        <th>time_from</th>
+                        <th>time_until</th>
+                        <th>subject</th>
+                        <th>entry</th>
+                        <th>room</th>
+                        <th>teacher</th>
+                        <th>restriction</th>
+                        <th>capacity</th>
+                        <th>notes</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dataKey, dataItem in data['data'] %}
+                        <tr>
+                            <td>{{ dataItem['day'] }}</td>
+                            <td>{{ dataItem['time_from'] }}</td>
+                            <td>{{ dataItem['time_until'] }}</td>
+                            <td><a href="#{{ dataItem['subject']['id'] }}">{{ dataItem['subject']['name'] ?? '' }}</a></td>
+                            <td>{{ dataItem['entry'] }}</td>
+                            <td><a href="#{{ dataItem['room']['id'] }}">{{ dataItem['room']['name'] ?? '' }}</a></td>
+                            <td><a href="#{{ dataItem['teacher']['id'] }}">{{ dataItem['teacher']['name'] ?? '' }}</a></td>
+                            <td>{{ dataItem['restriction'] }}</td>
+                            <td>{{ dataItem['capacity'] }}</td>
+                            <td>
+                                {% if dataItem['subject']['notes'] is not empty %}
+                                    <a class="btn-sm btn-info" data-toggle="collapse" href="#collapse{{ dataKey }}" role="button"
+                                       aria-expanded="false"
+                                       aria-controls="collapseExample">
+                                        show notes ({{ dataItem['subject']['notes']|length }})
+                                    </a>
+
+                                    <div class="collapse" id="collapse{{ dataKey }}">
+                                        <ul class="pt-5">
+                                            {% for note in dataItem['subject']['notes'] %}
+                                                <li>{{ note }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

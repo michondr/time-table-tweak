@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Subjects set{% endblock %}
+{% block h1 %}Ez insis timetable set{% endblock %}
+
+{% block body %}
+    <div class="">
+        {{ form(form) }}
+    </div>
+{% endblock %}
+
+{% block body_fluid %}
+
+    <div class="p-3">
+        {% if data['downloaded'] is defined %}
+            <h2 class="p-2">Result data
+                <small>(downloaded {{ data['downloaded'] }})</small>
+            </h2>
+        {% endif %}
+
+        {% if data['filter'] is defined %}
+            <div class="row">
+                <h4>filter</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dataKey, dataItem in data['filter'] %}
+                        <tr>
+                            <td>{{ dataKey }}</td>
+                            <td>{{ dataItem }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if data['data'] is defined %}
+            <div class="row">
+                <h4>results</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>name</th>
+                        <th>study_period</th>
+                        <th>department</th>
+                        <th>study_form</th>
+                        <th>beginning</th>
+                        <th>end</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dataKey, dataItem in data['data'] %}
+                        <tr>
+                            <td><a href="{{ path('ez_insis.item', {'timeTableItemId': dataKey}) }}">go to timetable actions</a></td>
+                            <td>{{ dataItem['name'] }}</td>
+                            <td>{{ dataItem['study_period'] }}</td>
+                            <td>{{ dataItem['department'] }}</td>
+                            <td>{{ dataItem['study_form'] }}</td>
+                            <td>{{ dataItem['beginning'] }}</td>
+                            <td>{{ dataItem['end'] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
