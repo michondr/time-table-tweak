@@ -1,15 +1,15 @@
-- hosts: time_table_tweak
+- hosts: aws
   gather_facts: no
 
   vars:
     project_folder: time-table-tweak
-    app_path: /home/{{ ansible_user }}/{{ project_folder }}
+    app_path: /srv/{{ project_folder }}/
 
   remote_user: '{{ ansible_user }}'
 
-  handlers:
   pre_tasks:
-  roles:
+    - name: test connection
+      ping:
 
   tasks:
     - name: checkout app from git repo
@@ -27,12 +27,12 @@
 
     - name: delete composer folder
       file:
-        path: /home/{{ ansible_user }}/.composer
+        path: /srv/.composer
         state: absent
-      become: yes
 
-    - name: run composer install
-      shell: composer install --working-dir {{ app_path }}
+#for some reason does not work
+#    - name: run composer install
+#      composer: command=install working_dir={{ app_path }}
 
     - name: managed folders has 777 chmod.
       file:
@@ -42,5 +42,3 @@
       with_items:
         - var/cache
         - var/log
-
-  post_tasks:

@@ -1,0 +1,46 @@
+- hosts: rosti
+  gather_facts: no
+
+  vars:
+    project_folder: time-table-tweak
+    app_path: /srv/{{ project_folder }}/
+
+  remote_user: '{{ ansible_user }}'
+
+  pre_tasks:
+    - name: test connection
+      ping:
+
+  tasks:
+    - name: checkout app from git repo
+      git:
+        repo: "https://github.com/michondr/time-table-tweak.git"
+        dest: '{{ app_path }}'
+        clone: yes
+        force: yes
+        accept_hostkey: yes
+        update: yes
+        version: "{{ branch | default('master') }}"
+
+    - name: set .env to project
+      shell: cp /srv/.env_time_table_tweak {{ app_path }}/.env
+
+    - name: delete composer folder
+      file:
+        path: /srv/.composer
+        state: absent
+
+    #for some reason does not work
+    - name: run composer install
+#      composer: command=install working_dir={{ app_path }}
+      shell: cd {{app_path}} && source .env; /usr/bin/php /usr/local/bin/composer install
+
+
+    - name: managed folders has 777 chmod.
+      file:
+        path: "{{ app_path }}/{{ item }}"
+        mode: 0777
+        recurse: true
+      with_items:
+        - var/cache
+        - var/log

@@ -1,1 +1,2 @@
-time_table_tweak ansible_host=18.197.192.230 ansible_private_key_file=~/.ssh/me.pem ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+aws ansible_host=18.197.192.230 ansible_private_key_file=~/.ssh/me.pem ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+rosti ansible_host=node-14.rosti.cz ansible_port=15464 ansible_private_key_file=~/.ssh/rsa.pub ansible_user=app ansible_python_interpreter=/usr/bin/python2
