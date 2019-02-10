@@ -67,16 +67,6 @@ class SetFormType extends AbstractType
                 ]
             )
             ->add(
-                'lang',
-                ChoiceType::class,
-                [
-                    'label' => 'lang',
-                    'required' => null,
-                    'choices' => ['EN' => 'en', 'CS' => 'cz'],
-                    'placeholder' => false,
-                ]
-            )
-            ->add(
                 'exact_match',
                 ChoiceType::class,
                 [

@@ -16,6 +16,7 @@ class ItemFormEntity
     private $teacher_name;
     private $subject_id;
     private $subject_name;
+    private $lang;
     private $exact_match;
 
     public function __construct()
@@ -101,6 +102,16 @@ class ItemFormEntity
     public function setSubjectName($subject_name): void
     {
         $this->subject_name = $subject_name;
+    }
+
+    public function getLang()
+    {
+        return $this->lang;
+    }
+
+    public function setLang($lang): void
+    {
+        $this->lang = $lang;
     }
 
     public function getExactMatch()

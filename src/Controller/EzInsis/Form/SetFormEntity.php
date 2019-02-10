@@ -14,7 +14,6 @@ class SetFormEntity
     private $study_form;
     private $beginning;
     private $end;
-    private $lang;
     private $exact_match;
 
     public function __construct()
@@ -80,16 +79,6 @@ class SetFormEntity
     public function setEnd($end): void
     {
         $this->end = $end;
-    }
-
-    public function getLang()
-    {
-        return $this->lang;
-    }
-
-    public function setLang($lang): void
-    {
-        $this->lang = $lang;
     }
 
     public function getExactMatch()
