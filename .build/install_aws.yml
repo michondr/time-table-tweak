@@ -5,6 +5,9 @@
     project_folder: time-table-tweak
     app_path: /home/{{ ansible_user }}/{{ project_folder }}
     nxinx_host: time-table-tweak
+    fpm_path: /var/run/php/php7.2-fpm.sock
+    db_url: mysql://michondr:Uh0cw5Md@michondr-rds.cdpbw9rz2dyn.eu-central-1.rds.amazonaws.com:3306/time_table_tweak
+    sentry_url: https://f1228f06faee4b5a8c7ea7cb3c965be9:21f82bc3901941938096cb1ac9c37e26@sentry.io/1198135
 
   vars_prompt:
     - name: "symfony_env"
@@ -77,7 +80,7 @@
     - name: add nginx config to /etc/nginx/sites-enabled/
       become: true
       template:
-        src: 'templates/time_table_tweak_nginx'
+        src: 'templates/time_table_tweak_nginx.conf'
         dest: '/etc/nginx/sites-enabled/time_table_tweak'
 
     - name: add .env config to ~/

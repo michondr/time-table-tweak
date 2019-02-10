@@ -30,11 +30,8 @@
         path: /srv/.composer
         state: absent
 
-    #for some reason does not work
     - name: run composer install
-#      composer: command=install working_dir={{ app_path }}
       shell: cd {{app_path}} && source .env; /usr/bin/php /usr/local/bin/composer install
-
 
     - name: managed folders has 777 chmod.
       file:

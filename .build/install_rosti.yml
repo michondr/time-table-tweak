@@ -5,6 +5,9 @@
     project_folder: time-table-tweak
     app_path: /srv/{{ project_folder }}/
     nxinx_host: time-table-tweak
+    fpm_path: /srv/run/php-fpm.sock
+    db_url: mysql://michondr_1535:AGVkLgJfPe@store4.rosti.cz:3306/michondr_1535
+    sentry_url: https://f1228f06faee4b5a8c7ea7cb3c965be9:21f82bc3901941938096cb1ac9c37e26@sentry.io/1198135
 
   remote_user: '{{ ansible_user }}'
 
@@ -15,7 +18,7 @@
   tasks:
     - name: add nginx config to /srv/conf/nginx.d/
       template:
-        src: 'templates/time_table_tweak_nginx'
+        src: 'templates/time_table_tweak_nginx.conf'
         dest: '/srv/conf/nginx.d/time_table_tweak'
 
     - name: add .env config to ~/
