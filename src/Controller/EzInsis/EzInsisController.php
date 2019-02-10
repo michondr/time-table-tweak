@@ -7,18 +7,12 @@ use App\Controller\EzInsis\Form\ItemFormType;
 use App\Controller\EzInsis\Form\SetFormEntity;
 use App\Controller\EzInsis\Form\SetFormType;
 use App\Controller\Flash;
-use App\Entity\Subject\SubjectFacade;
-use App\Entity\TimeTableItem\TimeTableItem;
-use App\Entity\TimeTableItem\TimeTableItemFacade;
-use App\TimeTableBuilder\Table\TimeTableFilter;
-use App\TimeTableBuilder\TimeTable;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\FormFactory;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class EzInsisController extends Controller
+class EzInsisController extends AbstractController
 {
     const EZ_INSIS_API_KEY = '1ec797627eca0f34fd2377c983ce37b9';
 

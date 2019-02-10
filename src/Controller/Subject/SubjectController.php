@@ -2,26 +2,31 @@
 
 namespace App\Controller\Subject;
 
+use App\Controller\Flash;
 use App\Entity\Subject\SubjectFacade;
 use App\Entity\TimeTableItem\TimeTableItem;
 use App\Entity\TimeTableItem\TimeTableItemFacade;
 use App\TimeTableBuilder\Table\TimeTableFilter;
 use App\TimeTableBuilder\TimeTable;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 
-class SubjectController extends Controller
+class SubjectController extends AbstractController
 {
     private $subjectFacade;
     private $timeTableItemFacade;
+    private $router;
 
     public function __construct(
         SubjectFacade $subjectFacade,
-        TimeTableItemFacade $timeTableItemFacade
+        TimeTableItemFacade $timeTableItemFacade,
+        RouterInterface $router
     ) {
         $this->subjectFacade = $subjectFacade;
         $this->timeTableItemFacade = $timeTableItemFacade;
+        $this->router = $router;
     }
 
     /**
@@ -29,6 +34,8 @@ class SubjectController extends Controller
      */
     public function index(Request $request)
     {
+        $this->addFlash(Flash::WARNING, 'All data is from SS 2018. I\'m slowly working on fix. You can get fresh data which insis provides in <a href="'.$this->router->generate('ez_insis.set').'">EZ INSIS</a> section');
+
         $indent = $request->query->get('indent');
         $subjects = [];
         $timeTables = [];

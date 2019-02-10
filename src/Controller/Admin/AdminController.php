@@ -6,9 +6,9 @@ use App\Controller\Flash;
 use App\DateTime\DateTimeFactory;
 use App\Entity\User\UserFacade;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class AdminController extends Controller
+class AdminController extends AbstractController
 {
     private $userFacade;
     private $dateTimeFactory;

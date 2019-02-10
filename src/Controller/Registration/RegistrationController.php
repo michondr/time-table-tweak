@@ -5,13 +5,14 @@ namespace App\Controller\Registration;
 use App\Controller\Flash;
 use App\Entity\User\User;
 use App\Entity\User\UserFacade;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class RegistrationController extends Controller
+class RegistrationController extends AbstractController
 {
     private $passwordEncoder;
     private $userFacade;

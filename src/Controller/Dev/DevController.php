@@ -4,9 +4,10 @@ namespace App\Controller\Dev;
 
 use App\Entity\TimeTableItem\TimeTableItemFacade;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class DevController extends Controller
+class DevController extends AbstractController
 {
     public function __construct(
         TimeTableItemFacade $tableItemFacade

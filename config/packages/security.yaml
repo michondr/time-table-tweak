@@ -13,7 +13,7 @@ security:
             security: false
 
         main:
-            anonymous: ~
+            anonymous: true
             pattern: ^/
             provider: our_db_provider
             form_login:

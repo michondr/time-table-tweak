@@ -54,7 +54,7 @@ class SetFormType extends AbstractType
                 [
                     'label' => 'beginning',
                     'required' => null,
-                    'attr' => ['placeholder' => 'format for exact match: d/m/Y'],
+                    'attr' => ['placeholder' => 'format for exact match: Y-m-d'],
                 ]
             )
             ->add(
@@ -63,7 +63,17 @@ class SetFormType extends AbstractType
                 [
                     'label' => 'end',
                     'required' => null,
-                    'attr' => ['placeholder' => 'format for exact match: d/m/Y'],
+                    'attr' => ['placeholder' => 'format for exact match: Y-m-d'],
+                ]
+            )
+            ->add(
+                'lang',
+                ChoiceType::class,
+                [
+                    'label' => 'lang',
+                    'required' => null,
+                    'choices' => ['EN' => 'en', 'CS' => 'cz'],
+                    'placeholder' => false,
                 ]
             )
             ->add(
